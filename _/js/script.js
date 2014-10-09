@@ -1,1 +1,1 @@
-function test(){return"Hello world"}
+function Person(a){return this.sdfsdf=a.age,this.name=a.name,"howdy"}function test(){return 18>=width?"Hi":"sdflkjsdflkj"}
