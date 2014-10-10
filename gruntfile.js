@@ -1,15 +1,25 @@
+var path = require('path');
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-express');
 
 
   grunt.initConfig({
-    uglify: {
-      my_target: {
-        files: {
-          '_/js/script.js': ['_/components/js/*.js']
+    express: {
+      options: {
+        port: 3000,
+        hostname: '*'
+      },
+      livereload: {
+        options: {
+          server: path.resolve('./app.js'),
+          livereload: true,
+          bases: [
+            path.resolve(__dirname, './public'),
+            path.resolve(__dirname, './views')
+          ]
         }
       }
     },
@@ -21,21 +31,14 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      scripts: {
-	      files: ['_/components/js/*.js'],
-	      tasks: ['uglify']
-      },
+      options: { livereload: true },
+
       sass: {
-        options: { livereload: true },
         files: ['_/components/sass/*.scss'],
         tasks: ['compass:dev']
-      },
-      html: {
-        files: ['*.html']
-      },
-      options: { livereload: true }
+      }
 
     }//watch
   });//initConfig
-  grunt.registerTask('default', 'watch');
-}
+  grunt.registerTask('default', ['express','watch']);
+};

@@ -1,9 +1,9 @@
+/* line 2, ../../_/components/sass/style.scss */
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background: blue;
-}
+  background: red; }
 
+/* line 8, ../../_/components/sass/style.scss */
 a {
-  color: #00B7FF;
-}
+  color: #00B7FF; }
