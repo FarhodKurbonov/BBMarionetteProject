@@ -70,6 +70,8 @@ build/Release
 #Ignore all node_modules
 
 node_modules
+#Sass cache files
+.sass-cache
 
 # Users Environment Variables
 .lock-wscript
