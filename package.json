@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node createDB"
+    "start": "node  createDB"
   },
   "dependencies": {
     "express": "~4.8.6",
@@ -27,8 +27,7 @@
     "mongoose": "*",
     "socket.io": "*",
     "mongodb": "*",
-    "async": "*",
-    "faker": "*"
+    "async": "*"
 
 
   }

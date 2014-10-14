@@ -94,21 +94,21 @@ schema.statics.update = function(data, callback) {
 
 /**
  * Запрос на удаление буквы
- * @param {{id: string}} data Содержит id удаляемой буквы
+ * @param {{id: string}} data Содержит id удаляемо буквы
  * @param callback  Коллбэк функция которой передается результат запроса
  * @protected
  */
 schema.statics.deleteContact = function(data, callback) {
   var Letter = this;
 
-  Letter.findByIdAndRemove(data.id, function(err, result) {
+  Contact.findByIdAndRemove(data.id, function(err, result) {
     if(err) return callback(err);
     var cont =  result.toObject();
     return callback(null, cont)
   })
 };
 
-exports.Contact = mongoose.model('Letter', schema);
+exports.Letter = mongoose.model('Letter', schema);
 exports.LetterError = LetterError;
 
 function LetterError(message) {
