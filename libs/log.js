@@ -3,8 +3,8 @@ var ENV = process.env.NODE_ENV;
 
 /**
  * Логгер с двумя транспортами: Файл и консоль
- * @param module Имя модуля которого необзодимо логгировать
- * @returns {Object} Возваряет логгер
+ * @param module Имя модуля которого необходимо логгировать
+ * @returns {Object} Возварщяем логгер
  */
 
 function getLogger(module) {
