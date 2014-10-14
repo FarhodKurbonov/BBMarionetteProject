@@ -61,7 +61,16 @@ function createLetters(callback) {
     {letter: 'm'}, {letter: 'n'}, {letter: 'o'}, {letter: 'p'},
     {letter: 'q'}, {letter: 'r'}, {letter: 's'}, {letter: 't'},
     {letter: 'u'}, {letter: 'v'}, {letter: 'w'}, {letter: 'x'},
-    {letter: 'y'}, {letter: 'z'},
+    {letter: 'y'}, {letter: 'z'}, {letter: '0..9'},
+
+    {letter: 'а'}, {letter: 'б'}, {letter: 'в'}, {letter: 'г'},
+    {letter: 'д'}, {letter: 'е'}, {letter: 'ж'},{letter: 'з'},
+    {letter: 'и'}, {letter: 'й'}, {letter: 'к'}, {letter: 'л'},
+    {letter: 'м'}, {letter: 'н'}, {letter: 'о'}, {letter: 'п'},
+    {letter: 'р'}, {letter: 'с'}, {letter: 'т'}, {letter: 'у'},
+    {letter: 'ф'}, {letter: 'х'}, {letter: 'ц'}, {letter: 'ч'},
+    {letter: 'ш'}, {letter: 'щ'}, {letter: 'ы'}, {letter: 'э'},
+    {letter: 'ю'}, {letter: 'я'}
 
   ];
   async.each(letters, function(letterData, callback) {
