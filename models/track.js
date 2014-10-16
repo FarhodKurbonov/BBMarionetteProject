@@ -5,39 +5,99 @@ var mongoose= require('libs/mongoose'),
     util    = require('util'),
     http    = require('http'),
     ObjectID = require('mongodb').ObjectID;
-
-function validatorFirsName(val) {
-  return val != ''
+/**
+ * Validation name of track
+ * @param {String} val Value of name
+ * @returns {boolean}
+ */
+function validatorName(val) {
+  return (val != '' && val.length > 2)
+}
+/**
+ *
+ * @param {Object.<Date>} val
+ * @returns {String} Formatted Date
+ */
+function isoDate(val) {
+  if (!val) return val;
+  return (val.getMonth() + 1) + "/" + val.getDate() + "/" + val.getFullYear();
 }
 
-function validatorLastName(val) {
-  return val.length > 2
-}
-
-var msgFirstName = [validatorFirsName, 'не может быть пустым'],
-    msgLasName = [validatorLastName, 'Слишко короткий(минимум 3 символа)'];
-
+var msgName = [validatorName, 'не может быть пустым'];
+var types = ['аранжировка', 'задавка', 'нарезка', 'оригинал'];
 var schema  = new Schema({
-  firstName: {
-    type: String,
-    validate: msgFirstName
-  },
-  lastName: {
+  name: {
     type: String,
     required: true,
-    validate: msgLasName
+    validate: msgName
   },
-  phone: {
-    type: String,
-    required: true,
-    unique: true
+  artistId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Artist'
   },
-  acquaintances:[{
+  url: { // urls: urlM-минусовка, urlP-плюсовка, urlT-текст
+    urlM: {type: String/*, required: true*/},
+    urlP: {type: String/*, required: true*/},
+    urlT: {type: String/*, required: true*/}
+  },
+  createdAt: {
+    type: Date,
+    get : isoDate
+  },
+  uploadUserId:{
     type: Schema.Types.ObjectId
-  }],
-  strangers: [{
+  },
+  likeVSdislike: {
+    up  : {
+      count: {type: Number, default: 0 },
+      date : {type: Date, default: Date.now}
+    },
+    down: {
+      count: {type: Number, default: 0 },
+      date : {type: Date, default: Date.now}
+    }
+  },
+  duration: {
+    type: String
+  },
+  bitRate: {
+    type: String
+  },
+  size: {
+    type: String
+  },
+  downloadCount: {
+    type: Number
+  },
+  Pl_UserId: {
     type: Schema.Types.ObjectId
-  }]
+  },
+  listenCount: {
+    type: Number
+  },
+  fonogrammType: {
+    caraoke: {
+      type: String,
+      enum: types
+    },
+    guitar: {
+      type: String,
+      enum: types
+    },
+    saxophone: {
+      type: String,
+      enum: types
+    },
+    percussion: {
+      type: String,
+      enum: types
+    }
+
+  },
+  vocal: {
+    type: String
+  }
+
 }, {
   versionKey: false,
   toJSON: {
@@ -165,14 +225,14 @@ schema.statics.deleteContact = function(data, callback) {
   })
 };
 
-exports.Contact = mongoose.model('Contact', schema);
-exports.ContactError = ContactError;
+exports.Track = mongoose.model('Track', schema);
+exports.TrackError = TrackError;
 
-function ContactError(message) {
+function TrackError(message) {
   Error.apply(this, arguments);
-  Error.captureStackTrace(this, ContactError);
+  Error.captureStackTrace(this, TrackError);
   this.message = message
 }
 
-util.inherits(ContactError, Error);
-ContactError.prototype.name = 'ContactError';
+util.inherits(TrackError, Error);
+TrackError.prototype.name = 'ContactError';

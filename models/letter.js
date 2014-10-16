@@ -5,6 +5,7 @@ var mongoose= require('libs/mongoose'),
   util    = require('util'),
   http    = require('http'),
   ObjectID = require('mongodb').ObjectID;
+
 /**
  * Буква каталога
  * @type {Schema}

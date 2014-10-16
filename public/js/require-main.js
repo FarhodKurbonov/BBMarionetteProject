@@ -1,6 +1,7 @@
 requirejs.config({
   baseUrl: 'js',
   paths  : {
+    'socket.io' : 'vendor/socket.io',
     'backbone'  : 'vendor/backbone',
     'jquery'    : 'vendor/jquery',
     'json2'     : 'vendor/json2',
@@ -10,7 +11,9 @@ requirejs.config({
     'underscore': 'vendor/underscore'
   },
   shim   : {
-
+    'socket.io' : {
+      exports: 'io'
+    },
     'underscore': {
       exports: '_'
     },
@@ -26,8 +29,9 @@ requirejs.config({
   }
 });
 var self = this;
-require(['app'], function(App) {
+require(['socket.io', 'app'], function(io, App) {
   console.dir(App);
-  self.App = App;
-  App.start();
+  window.socket = io.connect('');
+  //self.App = App;
+  //App.start();
 });

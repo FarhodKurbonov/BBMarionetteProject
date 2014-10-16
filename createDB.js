@@ -2,20 +2,21 @@ var mongoose = require('libs/mongoose'),
   async = require('async'),
   log = require('libs/log')(module),
   faker = require('faker'),
-  ObjectID = require('mongodb').ObjectID;
-  require('models/letter');
-  require('models/artist');
-  //Track = require('models/track');
-
-mongoose.set('debug', true);
+  ObjectID = require('mongodb').ObjectID,
+  Letter = require('models/letter').Letter,
+  Artist = require('models/artist').Artist;
+  Track = require('models/track').Track;
 
 
+  mongoose.set('debug', true);
 
 async.series([
   open,
   dropDatabase,
   requireModels,
-  createLetter
+  createLetter,
+  createArtist,
+  createTrack
 ], function(err) {
   mongoose.disconnect();
   process.exit(err ? 255 : 0);
@@ -61,32 +62,79 @@ function createLetter(callback) {
 
   async.each(letters, function(letterData, callback) {
     var letter = new mongoose.models.Letter(letterData);
-    letter.save(function(err) {
-      if (err) return err;
-      var artists = [];
-      for(var i = 0; i < 10; i++ ) {
-        var artist = {};
-        artist.name = faker.Name.findName();
-        artist.createdAt = new Date();
-        artist.letterId = letter.id;
-
-        artists.push(artist);
-      }
-
-      async.each(artists, function(artistData, callback) {
-        log.info(artistData.letterId);
-        var artist = new mongoose.models.Artist(artistData);
-        artist.save(callback);
-      }, callback);
-    });
+    letter.save(callback);
   }, callback);
 }
 
 function createArtist(callback) {
-  console.log('Enter to createArtist');
+
+    var artists = [];
+    for(var i = 0; i < 10; i++ ) {
+      var artist = {};
+      artist.name = faker.Name.findName();
+      artist.createdAt = new Date();
+      artist.avatar = faker.Image.avatar();
+      artists.push(artist);
+    }
+
+    async.each(artists, function(artistData, callback) {
+      async.series([
+        function(callback) {
+          var firstChar = artistData.name.charAt(0).toLowerCase();
+          Letter.findOne({letter: firstChar}).exec(function(err, res) {
+            if(err) callback(err);
+            res = res.toObject().id;
+            callback(null, res);
+          });
+        }
+      ],function(err, result) {
+        artistData.letterId = result[0];
+        var artist = new mongoose.models.Artist(artistData);
+        artist.save(callback);
+      });
+    }, callback);
+
 
 }
-function createTrack() {
+
+function createTrack(callback) {
+
+  async.waterfall([
+    function(callback) {
+      Artist.find({}).exec(function(err, results) {
+        if(err) callback(err);
+        results = results.map(function(artist) {
+          return artist.toObject().id;
+        });
+        callback(null, results);
+      });
+    },
+    function(artistsID, callback) {
+
+      async.each(artistsID, function(artistID, callback) {
+        var tracks = [];
+        for(var trackData = {}, i = 0 ; i < 20; i++ ) {
+          trackData.name = faker.Name.findName();
+          trackData.artistId = new ObjectID(artistID);
+          tracks.push(trackData);
+        }
+        async.each(tracks, function(trackData, callback) {
+          var track = new mongoose.models.Track(trackData);
+          track.save(callback);
+        }, callback);
+
+      }, callback);
+    }
+  
+  ],function (err, result) {
+      if(err) {
+        log.error('error');
+        callback(err);
+      }
+       log.info('success');
+        callback(result);
+
+  });
 
 }
 

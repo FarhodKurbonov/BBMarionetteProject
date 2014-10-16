@@ -29,7 +29,8 @@ var schema  = new Schema({
   name: {
     type: String,
     required: true,
-    validate: msgtName
+    validate: msgtName,
+    trim: true
   },
   letterId: {
     type: Schema.Types.ObjectId,
@@ -38,6 +39,9 @@ var schema  = new Schema({
   createdAt: {
     type: Date,
     get : isoDate
+  },
+  avatar: {
+    type: String
   }
 
 }, {
