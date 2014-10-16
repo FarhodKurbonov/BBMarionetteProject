@@ -32,6 +32,10 @@ var self = this;
 require(['socket.io', 'app'], function(io, App) {
   console.dir(App);
   window.socket = io.connect('');
-  //self.App = App;
-  //App.start();
+  window.socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+  self.App = App;
+  App.start();
 });

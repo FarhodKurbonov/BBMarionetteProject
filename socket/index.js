@@ -1,16 +1,16 @@
 
 var config  = require('config'),
   async   = require('async'),
-  log     = require('libs/log.js')(module),
+  log     = require('libs/log.js')(module);
   //HttpError    = require('error').HttpError,
   //Contact = require('models/contact').Contact,
-  app     = require('../app.js');
+  //app     = require('../app.js');
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
 
   io.sockets.on('connection', function (socket) {
-  log.info('Accross via socket.io is stabled!');
+    log.info('success socket.io');
 /*
     socket.on('contacts:create', function (data, response) {
       //Сохранить данные в базу Contacts
