@@ -8,7 +8,10 @@ requirejs.config({
     'marionette': 'vendor/backbone.marionette',
     'text'      : 'vendor/text',
     'tpl'       : 'vendor/underscore-tpl',
-    'underscore': 'vendor/underscore'
+    'underscore': 'vendor/underscore',
+    'iosync'    : 'vendor/backbone.iosync',
+    'spin'      : 'vendor/spin',
+    'spin.jquery': 'vendor/spin.jquery'
   },
   shim   : {
     'socket.io' : {
@@ -25,17 +28,15 @@ requirejs.config({
       deps: ['backbone'],
       exports: 'Marionette'
     },
-    'tpl'       : ['text', 'underscore']
+    'iosync'     : ['backbone', 'socket.io'],
+    'tpl'        : ['text', 'underscore'],
+    'spin.jquery': ['jquery','spin']
   }
 });
 var self = this;
 require(['socket.io', 'app'], function(io, App) {
-  console.dir(App);
   window.socket = io.connect('');
-  window.socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
   self.App = App;
   App.start();
+  console.dir('Start main App');
 });

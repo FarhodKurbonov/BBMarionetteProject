@@ -1,16 +1,24 @@
 
-var config  = require('config'),
-  async   = require('async'),
-  log     = require('libs/log.js')(module);
-  //HttpError    = require('error').HttpError,
-  //Contact = require('models/contact').Contact,
-  //app     = require('../app.js');
+var config    = require('config'),
+  async       = require('async'),
+  log         = require('libs/log.js')(module),
+  SocketError = require('error'),
+  Letter      = require('models/letter').Letter;
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
 
   io.sockets.on('connection', function (socket) {
-    log.info('success socket.io');
+    socket.on('letters:read', function(data, callback) {
+      Letter.fetch(data, function(err, result) {
+        if(err) {
+          return callback(new SocketError(404, 'Not Found this letter'));
+        } else {
+          return callback(null, result);
+        }
+      })
+    });
+
 /*
     socket.on('contacts:create', function (data, response) {
       //Сохранить данные в базу Contacts

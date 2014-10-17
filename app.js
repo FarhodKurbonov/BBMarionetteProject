@@ -1,19 +1,15 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var log = require('libs/log')(module);
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var config  = require('config');
+var express      = require('express'),
+    path         = require('path'),
+    favicon      = require('serve-favicon'),
+    log          =   require('libs/log')(module),
+    cookieParser = require('cookie-parser'),
+    bodyParser   = require('body-parser'),
+    errorHandler = require('errorhandler'),
+    config       = require('config');
 
 
 var app = express();
-//------------------------------------------------
-var server = require('http').createServer(app);
-var io = require('socket')(server);
-app.set('port', config.get('port'));
-server.listen(config.get('port'));
-//------------------------------------------------
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views/templates'));
@@ -26,10 +22,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 require('routes')(app);
-// catch 404 and forward to error handler
+
+//------------------------------------------------
+var server = require('http').createServer(app);
+var io = require('socket')(server);
+app.set('port', config.get('port'));
+server.listen(config.get('port'));
+//------------------------------------------------
+// Handle errors
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -62,3 +63,4 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
+module.exports.io = io;
