@@ -44,12 +44,19 @@ define(['app'], function(App) {
         require(['apps/landing/list/listController'], function(ListController) {
           _executeAction_(ListController.listLetters, {});
         })
+      },
+      listArtists: function(id) {
       }
     };
-
+    //Запускаем landingPage
     this.listenTo(App, 'letters:list', function() {
       App.navigate('letters');
       API.listLetters()
+    });
+    //Выводим список артистов выбранной буквы
+    this.listenTo(App, 'artists:list', function(id) {
+      App.navigate('letters/'+id);
+      API.listArtists(id);
     });
 
     /**

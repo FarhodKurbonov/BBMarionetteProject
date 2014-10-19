@@ -1,10 +1,9 @@
-// I gather this file is a starting point for the project.
-@import "compass";
+@import "bootstrap-compass";
+@import "bootstrap-variables";
 @import "bootstrap";
 
-// Include responsive Bootstrap styles
-// @import "bootstrap-responsive";
-
- @import "base";
- @import "header";
- @import "footer";
+//-----------Custom Styles------------------
+@import "base";
+@import "header";
+//@import "main";
+@import "footer";

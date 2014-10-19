@@ -1,14 +1,18 @@
 define(['app',
-  'libs/views/_base/ItemVew',
+  'libs/views/_base/ItemView',
   'libs/views/_base/LayoutView',
   'tpl!libs/views/templates/layout.tpl',
   'tpl!libs/views/templates/loadingView.tpl',
   'tpl!libs/views/templates/paginationControls.tpl',
+  'tpl!libs/views/templates/ru_en_Layout.tpl',
   'spin.jquery'
-], function (App, /*Marionette Views->*/ItemView, LayoutView, /*Templates->*/layoutTpl, loadingView, pageControlTpl) {
+], function (App, /*Marionette Views->*/ItemView, LayoutView, /*Templates->*/layoutTpl, loadingView, pageControlTpl, ru_en_tpl) {
   App.module("Views.Common", function (Common, ContactManager, Backbone, Marionette, $, _) {
-
-/*    Common.PaginatedView = LayoutView.extend({
+    /**
+     *
+     * @type {void}
+     */
+    Common.PaginatedView = LayoutView.extend({
       template: layoutTpl,
 
       regions: {
@@ -44,8 +48,13 @@ define(['app',
           this.paginationMainRegion.show(listView);
         });
       }
-    });*/
-
+    });
+    /**
+     * Используется для анимации во время загрузки данных с сервера
+     * использует плагин jquery.spin а также интерфейс spin.js
+     * @ {}
+     *
+     */
     Common.Loading = ItemView.extend({
       template: loadingView,
 
@@ -83,43 +92,56 @@ define(['app',
         $('#spinner').spin(opts)
       }
     });
-
-/*    Common.PaginationControls = ItemView.extend({
-      template: pageControlTpl,
-      className: "pagination",
-
-      initialize: function (options) {
-        this.paginatedCollection = options.paginatedCollection;
-        this.urlBase = options.urlBase;
-        this.listenTo(this.paginatedCollection, "page:change:after", this.render);
+    /**
+     * @constructor
+     * @type {Object.<Marionette.LayoutView>}
+     * @extends {App.Views.LayoutView}
+     */
+    Common.RuEnView = LayoutView.extend({
+      template: ru_en_tpl,
+      regions : {
+        en:  '.js-en-letters',
+        ru: '.js-ru-letters'
       },
+      initialize: function(options) {
+        var models = options.collection.models;
+        var eventsToPropagate = options.propagatedEvents || [];
+        var enCollection  = [];
+        var ruCollection = [];
+        for(var i = 0; i < models.length; i++ ) {
 
-      events: {
-        "click a[class=navigatable]": "navigateToPage"
-      },
-
-      navigateToPage: function (e) {
-        e.preventDefault();
-        var page = parseInt($(e.target).data("page"), 10);
-        this.paginatedCollection.parameters.set("page", page);
-        this.trigger("page:change", page);
-      },
-
-      serializeData: function () {
-        var data = this.paginatedCollection.info(),
-          url = this.urlBase,
-          criterion = this.paginatedCollection.parameters.get('criterion');
-        if (url) {
-          if (criterion) {
-            url += 'criterion' + criterion + '+';
-          }
-          url += 'page:';
+            if(i < 27){
+              enCollection.push(models[i]);
+            } else {
+              ruCollection.push(models[i]);
+            }
         }
-        data.urlBase = url;
-        return data;
-      }
-    });*/
+        var self = this;
+        var enLetters = new options.mainView({
+          collection: new Backbone.Collection(enCollection)
+        });
+        _.each(eventsToPropagate, function (evt) {
+          self.listenTo(enLetters, evt, function (view, model) {
+            self.trigger(evt, view, model);
+          });
+        });
 
+        var ruLetters = new options.mainView({
+          collection: new Backbone.Collection(ruCollection)
+        });
+        _.each(eventsToPropagate, function (evt) {
+          self.listenTo(ruLetters, evt, function (view, model) {
+            self.trigger(evt, view, model);
+          });
+        });
+        this.on('show', function() {
+          this.en.show(enLetters);
+          this.ru.show(ruLetters);
+        })
+
+
+      }
+    });
   });
   return App.Views.Common;
-})
+});

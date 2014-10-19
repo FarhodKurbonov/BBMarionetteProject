@@ -1,5 +1,5 @@
 /**
- * Base ItemView
+ * Base LayoutView
  */
 define(['app'], function (App) {
   App.module('Views', function(Views, App, Backbone, Marionette, $, _) {
@@ -10,5 +10,5 @@ define(['app'], function (App) {
      */
     Views.LayoutView = Marionette.LayoutView.extend({});
   });
-  return App.Views.ItemView;
+  return App.Views.LayoutView;
 });

@@ -8,7 +8,7 @@ define(['app'], function (App) {
      * @extends {Marionette.CompositeView}
      * @type {Object}
      */
-    Views.ItemView = Marionette.CompositeView.extend({});
+    Views.CompositeView = Marionette.CompositeView.extend({});
   });
   return App.Views.CompositeView;
 });

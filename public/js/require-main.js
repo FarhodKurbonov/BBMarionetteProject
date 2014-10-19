@@ -4,6 +4,7 @@ requirejs.config({
     'socket.io' : 'vendor/socket.io',
     'backbone'  : 'vendor/backbone',
     'jquery'    : 'vendor/jquery',
+    'jquery-ui' : 'vendor/jquery-ui',
     'json2'     : 'vendor/json2',
     'marionette': 'vendor/backbone.marionette',
     'text'      : 'vendor/text',
@@ -29,6 +30,7 @@ requirejs.config({
       exports: 'Marionette'
     },
     'iosync'     : ['backbone', 'socket.io'],
+    'jquery-ui' : ['jquery'],
     'tpl'        : ['text', 'underscore'],
     'spin.jquery': ['jquery','spin']
   }

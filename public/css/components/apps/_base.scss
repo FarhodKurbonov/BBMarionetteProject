@@ -1,9 +1,77 @@
-html, body{
-  height: 100%;
+@import "compass/css3";
+
+  //== Colors
+  $gray-darker:            lighten(#000, 13.5%); // #222
+  $gray-dark:              lighten(#000, 20%);   // #333
+  $gray:                   lighten(#000, 33.5%); // #555
+  $gray-light:             lighten(#000, 46.7%); // #777
+  $gray-lighter:             lighten(#000, 93.5%); // #eee
+
+  $brand-primary:         #428bca;
+  $brand-success:         #5cb85c;
+  $brand-info:            #5bc0de;
+  $brand-warning:         #f0ad4e;
+  $brand-danger:          #d9534f;
+
+ //## Settings for some of the most global styles.
+
+  //** Background color for `<body>`.
+  $body-bg:               #fff;
+  //** Global text color on `<body>`.
+  $text-color:            $gray-dark;
+
+//** Global textual link color.
+$link-color:            $brand-primary;
+//** Link hover color set via `darken()` function.
+$link-hover-color:      darken($link-color, 15%);
+
+
+body {
+  background: $gray-lighter;
+  overflow:hidden;
 }
 
-#wrap {
-  height: auto !important;
-  margin: 0 auto -60px;
-  min-height: 100%;
+body > .wrap {
+  position: absolute;
+  margin-top: 100px;
+  left:50%; margin-left:-450px;
+  width: 900px;
+  min-height: 100px;
+  z-index: 2;
+  color: $text-color;
+
 }
+.wrap h1 {
+    font-size: 64px;
+    z-index: 2;
+    font-family: "Helvetica Neue",Helvetica,"Nimbus Sans",Arial,sans-serif;
+    font-weight: lighter;
+    text-align: center;
+}
+
+.wrap input{
+    @include border-radius(40px, 40px);
+    margin: 40px auto 10px;
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.5);
+
+}
+  .wrap p, .wrap ul {
+    margin: 0 auto;
+    width: 80%;
+    text-align: center;
+    font-weight: lighter;
+    text-transform: lowercase;
+  }
+  .wrap p {
+    margin-bottom: 15px;
+  }
+  .wrap ul {
+    font-size: 15px;
+  }
+  .wrap li {
+    margin: 2px;
+  }
+  .wrap ul li a {
+    color: $body-bg;
+  }
