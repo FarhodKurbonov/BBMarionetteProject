@@ -30,6 +30,7 @@ define(['app'], function (App) {
        */
       highlight: function (toggleClassName) {
         this.$el.toggleClass(toggleClassName);
+        this.trigger('artist:data', this.model)
       }
     });
   });

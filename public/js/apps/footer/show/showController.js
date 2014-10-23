@@ -1,14 +1,17 @@
-define(['app', 'apps/footer/show/showView'], function (App, FooterAppShow) {
+define([
+  'app',
+  'libs/controllers/ApplicationController',
+  'apps/footer/show/showView'
+], function (App, Controllers, View) {
   App.module('FooterApp.Show', function(Show, App, Backbone, Marionette, $, _) {
-    Show.Controller = {
+
+    var Controller = Controllers.extend( {
       showFooter: function () {
-        var footerView = this.getFooterView();
+        var footerView = new View.Footer;
         App.footerRegion.show(footerView)
-      },
-      getFooterView: function() {
-        return new FooterAppShow.Footer
       }
-    }
+    });
+    Show.Controller = new Controller();
   });
-  return App.FooterApp.Show;
+  return App.FooterApp.Show.Controller;
 });

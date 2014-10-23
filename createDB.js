@@ -69,7 +69,7 @@ function createLetter(callback) {
 function createArtist(callback) {
 
     var artists = [];
-    for(var i = 0; i < 10; i++ ) {
+    for(var i = 0; i < 500; i++ ) {
       var artist = {};
       artist.name = faker.Name.findName();
       artist.createdAt = new Date();

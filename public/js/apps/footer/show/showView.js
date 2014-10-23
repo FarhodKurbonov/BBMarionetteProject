@@ -1,6 +1,10 @@
-define(['app', 'tpl!apps/footer/show/templates/layout.tpl'], function (App, layoutTpl) {
+define([
+  'app',
+  'libs/views/_base/ItemView',
+  'tpl!apps/footer/show/templates/layout.tpl'
+], function (App, ItemView, layoutTpl) {
   App.module('FooterApp.Show', function(Show, App, Backbone, Marionette, $, _) {
-    Show.Footer = Marionette.ItemView.extend({
+    Show.Footer = ItemView.extend({
       template: layoutTpl,
       id: 'footer'
     });

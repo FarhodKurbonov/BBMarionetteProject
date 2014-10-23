@@ -11,8 +11,14 @@ requirejs.config({
     'tpl'       : 'vendor/underscore-tpl',
     'underscore': 'vendor/underscore',
     'iosync'    : 'vendor/backbone.iosync',
+    'validation': 'vendor/backbone.validation',
+    'paginator' : 'vendor/backbone.paginator',
+    'syphon'    : 'vendor/backbone.syphon',
     'spin'      : 'vendor/spin',
-    'spin.jquery': 'vendor/spin.jquery'
+    'spin.jquery':'vendor/spin.jquery',
+    'picky'     : 'vendor/backbone.picky',
+    'affix'     : 'vendor/bootstrap/affix'
+
   },
   shim   : {
     'socket.io' : {
@@ -30,13 +36,18 @@ requirejs.config({
       exports: 'Marionette'
     },
     'iosync'     : ['backbone', 'socket.io'],
-    'jquery-ui' : ['jquery'],
+    'jquery-ui'  : ['jquery'],
+    'validation' : ['backbone'],
+    'paginator'  : ['backbone'],
     'tpl'        : ['text', 'underscore'],
-    'spin.jquery': ['jquery','spin']
+    'syphon'     : ['backbone'],
+    'spin.jquery': ['jquery','spin'],
+    'picky'      : ['backbone'],
+    'affix'      : ['jquery']
   }
 });
 var self = this;
-require(['socket.io', 'app'], function(io, App) {
+require(['socket.io', 'app', 'apps/header/HeaderApp', 'apps/footer/FooterApp'], function(io, App) {
   window.socket = io.connect('');
   self.App = App;
   App.start();

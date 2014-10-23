@@ -1,5 +1,5 @@
 <% if( totalPages > 1 ){ %>
-<ul>
+<ul class="pagination">
     <% if( currentPage > 1 ) { %>
     <li><a href="#<%- urlBase ? urlBase + 1 : '' %>" class="navigatable" data-page="1">&laquo;</a></li>
     <li><a href="#<%- urlBase ? urlBase + previous : '' %>" class="navigatable" data-page="<%- previous %>">&lsaquo;</a></li>

@@ -7,19 +7,6 @@ module.exports = function(grunt) {
 
 
   grunt.initConfig({
-    'node-inspector': {
-      custom: {
-        options: {
-          'web-port': 8080,
-          'web-host': '127.0.0.1',
-          'debug-port': 5858,
-          'save-live-edit': true,
-          'no-preload': true,
-          'stack-trace-limit': 4,
-          'hidden': ['node_modules']
-        }
-      }
-    },
     express: {
       options: {
         port: 3000,
@@ -53,6 +40,5 @@ module.exports = function(grunt) {
 
     }//watch
   });//initConfig
-  //grunt.loadNpmTasks('grunt-node-inspector');
   grunt.registerTask('default', ['express','watch']);
 };

@@ -1,12 +1,21 @@
-<div id="header" class="navbar">
-    <div class="navbar-inner">
-        <div class="container">
-            <div class="row">
-                <div class="pull-left">
-                    <span class="navbar-brand">PlanetExpress</span>
-                </div>
-                <ul class="nav pull-right"></ul>
-            </div>
-        </div>
-    </div>
-</div>
+
+  <div id="header" class="navbar navbar-default" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapsedItems">
+          <span class="sr-only">Меню</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+          <a class="navbar-brand" href="/">PlayMinus</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="collapsedItems">
+          <ul class="nav navbar-nav">
+
+          </ul>
+
+      </div>
+     </div><!--container-fluid-->
+  </div>

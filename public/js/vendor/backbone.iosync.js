@@ -52,7 +52,7 @@
  * @name sync
  */
 Backbone.sync = function (method, model, options) {
-  var params = _.extend({}, options)
+  var params = _.extend({}, options);
 
   if (params.url) {
     params.url = _.result(params, 'url');
@@ -63,8 +63,23 @@ Backbone.sync = function (method, model, options) {
   var cmd = params.url.split('/')
     , namespace = (cmd[0] !== '') ? cmd[0] : cmd[1]; // if leading slash, ignore
 
+  //Этот обьект будеть хранить информацию о параметрах запроса касающихся acquaintances & strangers
+  var relationModelData = {};
+  if(cmd.length >= 2) {
+    relationModelData.parentID = cmd[1];
+    relationModelData.relation = cmd[2];
+  }
+
   if ( !params.data && model ) {
     params.data = params.attrs || model.toJSON(options) || {};
+
+    //Это проверка связана с работой метода toJSON фреймворка Backbone.
+    // Если делается запрос на сервер коллекции то он возвращяет массив
+    // содержаший атрибуты моделей входящих в коллекцию
+    // А вот если с сервера запрашивается модель то оно создает один
+    // объект с аттрибутами данной модели
+    if(params.data instanceof Array)
+      params.data.push(relationModelData);
   }
 
   if (params.patch === true && params.data.id == null && model) {
@@ -79,11 +94,12 @@ Backbone.sync = function (method, model, options) {
   var defer = $.Deferred();
   io.emit(namespace + ':' + method, params.data, function (err, data) {
     if (err) {
+
       if(options.error) options.error(err);
-      defer.reject();
+      defer.reject(err);
     } else {
       if(options.success) options.success(data);
-      defer.resolve();
+      defer.resolve(data);
     }
   });
   var promise = defer.promise();

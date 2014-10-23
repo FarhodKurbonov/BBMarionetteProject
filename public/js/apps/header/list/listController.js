@@ -1,22 +1,42 @@
-define(['app', 'apps/header/list/listView'], function (App, HeaderAppList) {
-  App.module('HeaderApp.List', function(List, App, Backbone, Marionette, $, _) {
-    List.Controller = {
+define([
+  'app',
+  'libs/controllers/ApplicationController',
+  'apps/header/list/listView',
+  'entities/header'
 
-      listHeader: function () {
-        require(['entities/header'], function() {
+],
+  function (App, Controllers, View) {
+    App.module('HeaderApp.List', function (List, App, Backbone, Marionette, $, _) {
+      var Controller = Controllers.extend({
+        listHeader: function () {
           var links = App.request('header:entities');
-          window.linkeds = links;
-          var headerView = List.Controller.getHeaderVew(links);
-          App.headerRegion.show(headerView);
-         });
+          var headers = new View.Headers({collection: links});
+          var self = List.Controller;
+          self.listenTo(headers, 'brand:clicked', function () {
+            App.trigger('letters:list')
+          });
 
-      },
-      getHeaderVew: function(links) {
-        return new HeaderAppList.Headers({
-          collection: links
-        })
-      }
-    }
-  });
-  return App.HeaderApp.List;
-});
+          self.listenTo(headers, 'childview:navigate', function (childView, model) {
+            var trigger = model.get('navigationTrigger');
+            App.trigger(trigger);
+
+          });
+          App.headerRegion.show(headers);
+
+        },
+
+        setActiveHeader: function (headerUrl) {
+
+          var links = App.request('header:entities');
+          var headerToSelect = links.find(function (header) {
+            return header.get('url') === headerUrl;
+          });
+          headerToSelect.select();
+          links.trigger('reset')
+        }
+      });
+
+      List.Controller = new Controller();
+    });
+    return App.HeaderApp.List.Controller;
+  })

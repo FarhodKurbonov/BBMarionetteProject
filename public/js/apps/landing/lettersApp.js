@@ -16,6 +16,7 @@ define(['app'], function(App) {
     LettersApp.onStop = function () {
       console.info('Stop LettersApp')
     };
+
   });
   /**
    * RoutersLettersApp  Этот автоматически запускается при старте "App". В нем мы запускаем
@@ -34,7 +35,7 @@ define(['app'], function(App) {
      * @param {Object} args
      * @private
      */
-    var _executeAction_ = function(action, args) {
+    var _executeAction = function(action, args) {
       App.startApp('LettersApp');
       action(args);
     };
@@ -42,11 +43,15 @@ define(['app'], function(App) {
     var API = {
       listLetters: function() {
         require(['apps/landing/list/listController'], function(ListController) {
-          _executeAction_(ListController.listLetters, {});
+          _executeAction(ListController.listLetters, {});
         })
-      },
-      listArtists: function(id) {
       }
+/*      listArtists: function(id) {
+        require([], function(){
+
+        });
+       App.trigger('artists:list', model.get('id'));
+      }*/
     };
     //Запускаем landingPage
     this.listenTo(App, 'letters:list', function() {
@@ -54,10 +59,10 @@ define(['app'], function(App) {
       API.listLetters()
     });
     //Выводим список артистов выбранной буквы
-    this.listenTo(App, 'artists:list', function(id) {
+/*    this.listenTo(App, 'letter:show', function(id) {
       App.navigate('letters/'+id);
       API.listArtists(id);
-    });
+    });*/
 
     /**
      * Привязываем роутер к API

@@ -19,7 +19,7 @@ define([
         App.mainRegion.show(loadingView);
         //подгружаем все буквы
         require(['entities/letter'], function() {
-          var fetchLetters = App.request('letters: entities');
+          var fetchLetters = App.request('letters:entities');
 
           var lettersListLayout =  new View.Layout();
           var searchForm        =  new View.Search();
@@ -33,20 +33,22 @@ define([
                */
               var lettersListView = new ViewsCommon.RuEnView({
                 collection: letters,
-                mainView  : View.Letters,
-                /*Необходимо для проброса из вложенного вида наружу */
+                mainView  : View.Letters
+                /*Необходимо для проброса событий из вложенного вида наружу */
+/*
                 propagatedEvents: [
-                  'childview:artists:list',
+                  'childview:letter:show',
                 ]
+*/
               });
 
               self.listenTo(lettersListLayout, 'show', function() {
                 lettersListLayout.searchRegion.show(searchForm);
                 lettersListLayout.lettersRegion.show(lettersListView);
               });
-              self.listenTo(lettersListView, 'childview:artists:list', function(childview, model) {
-                App.trigger('artists:list', model.get('id'));
-              });
+/*              self.listenTo(lettersListView, 'childview:letter:show', function(childview, model) {
+                App.trigger('letter:show', model.get('id'));
+              });*/
               App.mainRegion.show(lettersListLayout);
             });
         })

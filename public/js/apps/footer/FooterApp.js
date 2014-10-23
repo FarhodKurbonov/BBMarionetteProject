@@ -1,12 +1,11 @@
-define(['app'], function (App) {
+define(['app', 'apps/footer/show/showController'], function (App, Controllers) {
   App.module('FooterApp', function(FooterApp, App, Backbone, Marionette, $, _) {
     this.startWithParent = false;
 
     var API = {
       showFooter: function() {
-        require(['apps/footer/show/showController'], function(FooterAppShow) {
-          FooterAppShow.Controller.showFooter()
-        });
+        Controllers.showFooter();
+          console.log('headerApp');
       }
     };
     FooterApp.on('start', function () {

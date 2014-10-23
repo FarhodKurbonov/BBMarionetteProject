@@ -1,3 +1,2 @@
-
-<a href="#letter/<%=id %>" class="js-show"><%= letter %></a>
+<a href="#artists/<%=letter %>" class="js-show"><%= letter %></a>
 

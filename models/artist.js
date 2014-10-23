@@ -4,7 +4,12 @@ var mongoose= require('libs/mongoose'),
   async   = require('async'),
   util    = require('util'),
   http    = require('http'),
-  ObjectID = require('mongodb').ObjectID;
+  ObjectID = require('mongodb').ObjectID,
+  Letter   = require('models/letter').Letter;
+  Track   = require('models/track').Track;
+
+
+
 /**
  * Validation name of artist
  * @param {String} val Value of name
@@ -67,47 +72,28 @@ var schema  = new Schema({
     //});
     return callback(null, cont)
   })
-};
+};*/
 
 schema.statics.fetch = function(data, callback) {
-  require('models/contact');
-  var Contact = this;
+  var Artist = this;
   if(data[0]){
     data = data[0];
   }
-
-  if(data.id || data.parentID) {
-    if( data.relation ) {
-      var id = new ObjectID(data.parentID), cursor;
-      switch (data.relation) {
-        case 'acquaintances':
-          cursor = Contact.find( { acquaintances: id } );
-          break;
-        case 'strangers':
-
-          cursor = Contact.find({acquaintances: { $ne: id }});
-          break;
-      }
-      cursor.exec(function(err, result) {
+  if(data.parentID) {
+    Letter.find({letter: data.parentID}).exec(function(err, result) {
+      if(err) return callback(err);
+      result = result[0].toObject();
+      Artist.find({letterId: result._id}).exec(function(err, result) {
         if(err) return callback(err);
         result = result.map(function (contact) {
           var cont =  contact.toObject();
           return cont;
         });
-        return callback(err, result);
-      });
-
-    }
-    Contact.find({_id: data.id}).exec(function(err, result) {
-      if(err) return callback(err);
-      result = result.map(function (contact) {
-        var cont =  contact.toObject();
-        return cont;
-      });
-      callback(err, result[0]);
+          return callback(err, result);
+      })
     });
   } else {
-    Contact.find({}).exec(function(err, result){
+    Artist.find({}).exec(function(err, result){
       result = result.map(function (contact) {
         var cont =  contact.toObject();
         return cont;
@@ -115,9 +101,21 @@ schema.statics.fetch = function(data, callback) {
       callback(err, result);
     });
   }
-
 };
 
+
+schema.statics.deleteArtist = function(data, callback) {
+  var Artist = this;
+  Track.remove({artistId: data.id}, function(err, result) {
+      if(err) return callback(err);
+      Artist.findByIdAndRemove(data.id, function(err, result) {
+        if(err) return callback(err);
+        var art =  result.toObject();
+        return callback(null, art)
+      })
+  });
+};
+/*
 schema.statics.update = function(data, callback) {
   var Contact = this;
 
@@ -150,25 +148,7 @@ schema.statics.update = function(data, callback) {
 
   })
 };
-
-schema.statics.deleteContact = function(data, callback) {
-  var Contact = this;
-  if(data.relation) {
-
-    Contact.findByIdAndUpdate(data.id, { $pull: {acquaintances: new ObjectID(data.acquaintedID)} }, function(err, result) {
-      if(err) return callback(err);
-      var cont =  result.toObject();
-      return callback(null, cont)
-
-    });
-  }
-
-  Contact.findByIdAndRemove(data.id, function(err, result) {
-    if(err) return callback(err);
-    var cont =  result.toObject();
-    return callback(null, cont)
-  })
-};*/
+;*/
 
 exports.Artist = mongoose.model('Artist', schema);
 exports.ArtistError = ArtistError;

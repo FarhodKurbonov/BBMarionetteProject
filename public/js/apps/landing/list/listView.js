@@ -8,7 +8,7 @@ define(['app',
   'tpl!apps/landing/list/template/_letterItem.tpl'
 
 ],function(App,/*Views*/ ItemView, CompositeView, LayoutView,/*Templates*/ layoutTpl, searchTpl, lettersTpl, letterItemTpl) {
-  App.module("LettersApp.List", function (List, ContactManager, Backbone, Marionette, $, _) {
+  App.module("LettersApp.List", function (List, App, Backbone, Marionette, $, _) {
     /**
      * Главный лейаут
      * @type {Object.<Marionette.LayoutView>}
@@ -75,10 +75,10 @@ define(['app',
        * @export
        */
       showClicked: function (e) {
-        e.preventDefault();
+        /*e.preventDefault();*/
         e.stopPropagation();
         this.highlight('label-warning');
-        this.trigger('artists:list', this.model);
+        /*this.trigger('letter:show', this.model);*/
       }
     });
     /**

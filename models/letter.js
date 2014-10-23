@@ -48,19 +48,8 @@ schema.statics.create = function(data, callback) {
  * @protected
  */
 schema.statics.fetch = function(data, callback) {
-  require('models/letter');
   var Letter = this;
 
-  if(data.id) {
-    Letter.find({_id: data.id}).exec(function(err, result) {
-      if(err) return callback(err);
-      result = result.map(function (contact) {
-        var cont =  contact.toObject();
-        return cont;
-      });
-      return callback(err, result[0]);
-    });
-  } else {
     Letter.find({}).exec(function(err, result){
       result = result.map(function (contact) {
         var cont =  contact.toObject();
@@ -68,7 +57,7 @@ schema.statics.fetch = function(data, callback) {
       });
       return callback(err, result);
     });
-  }
+
 
 };
 /**

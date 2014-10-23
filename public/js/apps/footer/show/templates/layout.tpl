@@ -1,5 +1,5 @@
 <div id="footer">
     <div class="container">
-        <p class="muted">BackboneRails.com - Episode 05 - Demo</p>
+        <p class="muted">Footer</p>
     </div>
 </div>

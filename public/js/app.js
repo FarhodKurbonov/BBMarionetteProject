@@ -1,7 +1,9 @@
 define(['marionette'], function (Marionette) {
   var App = new Marionette.Application();
   App.addRegions({
-    mainRegion: '#main-region'
+    headerRegion: '#header-region',
+    mainRegion  : '#main-region',
+    footerRegion: '#footer-region'
   });
   /**
    * Кастомная функция для обновления url состояния адресной строки
@@ -34,10 +36,12 @@ define(['marionette'], function (Marionette) {
     App.currentApp = currentApp;
     currentApp.start(args);
   };
-
   App.on('start', function() {
     if(Backbone.history){
-      require(['apps/landing/lettersApp'], function() {
+      require([
+        'apps/landing/lettersApp',
+        'apps/artists/artistsApp'
+      ], function() {
        Backbone.history.start();
        if(App.getCurrenRouet() === '') {
          App.trigger('letters:list');// Trigger landing page

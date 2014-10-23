@@ -3,7 +3,7 @@
   width: 1200px;
 }
 
-body > .container {
+body content#main-region .container {
   min-height: 600px;
 }
 
@@ -34,8 +34,8 @@ body > .container {
 body {
   background: #f6f6f6;
 }
-
-body > div.container {
+//--------Изменили body > div.container на
+body content#main-region div.container {
   background: #fff;
   box-shadow: 0 5px 5px rgba(0,0,0,0.15);
   padding: 20px 10px;

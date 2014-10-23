@@ -46,7 +46,7 @@ define([
         return defer.promise();
       }
     };
-    App.reqres.setHandler('letters: entities', function() {
+    App.reqres.setHandler('letters:entities', function() {
       return API.getLetterEntities();
     })
   });

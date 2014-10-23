@@ -3,7 +3,8 @@ var config    = require('config'),
   async       = require('async'),
   log         = require('libs/log.js')(module),
   SocketError = require('error'),
-  Letter      = require('models/letter').Letter;
+  Letter      = require('models/letter').Letter,
+  Artist      = require('models/artist').Artist;
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
@@ -17,6 +18,29 @@ module.exports = function(server) {
           return callback(null, result);
         }
       })
+    });
+
+    socket.on('artists:read', function(data, callback) {
+      Artist.fetch(data, function(err, result) {
+        if(err) {
+          return callback(new SocketError(404, 'Not Found artists'));
+        } else {
+          return callback(null, result)
+        }
+      });
+
+    });
+
+    socket.on('artists:delete', function(artist, response) {
+      //Удаляем контакт
+      //Отправить обратно the result
+      Artist.deleteArtist(artist, function(err, artist) {
+
+        if(err) {
+          return response(new SocketError(404, err.message));
+        }
+        return response(null, artist);
+      });
     });
 
 /*
@@ -94,17 +118,7 @@ module.exports = function(server) {
 
     });
 
-    socket.on('contacts:delete', function(contact, response) {
-      //Удаляем контакт
-      //Отправить обратно the result
-      Contact.deleteContact(contact, function(err, contact) {
-
-        if(err) {
-          return response(new ContactError(401, err.message))
-        }
-        return response(null, contact);
-      });
-    })*/
+*/
   });
 
   return io
