@@ -1,5 +1,5 @@
 <td><a href="#artists/<%=id%>/<%=name%>"><%= name %></a></td>
-<td>10</td>
+<td><%=count%></td>
 <td align="right" nowrap class="btn-group">
   <a class="btn btn-default btn-sm js-edit" href="#artists/<%=id%>/edit">
     <i class="icon-pencil"></i> Редактировать

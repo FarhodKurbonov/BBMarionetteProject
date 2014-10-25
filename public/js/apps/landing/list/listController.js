@@ -34,21 +34,13 @@ define([
               var lettersListView = new ViewsCommon.RuEnView({
                 collection: letters,
                 mainView  : View.Letters
-                /*Необходимо для проброса событий из вложенного вида наружу */
-/*
-                propagatedEvents: [
-                  'childview:letter:show',
-                ]
-*/
               });
 
               self.listenTo(lettersListLayout, 'show', function() {
                 lettersListLayout.searchRegion.show(searchForm);
                 lettersListLayout.lettersRegion.show(lettersListView);
               });
-/*              self.listenTo(lettersListView, 'childview:letter:show', function(childview, model) {
-                App.trigger('letter:show', model.get('id'));
-              });*/
+
               App.mainRegion.show(lettersListLayout);
             });
         })

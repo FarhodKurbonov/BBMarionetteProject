@@ -17,6 +17,7 @@ define([
           letterId   : '',
           createdAt  : '',
           avatar     : '',
+          count      : 0,
           changedOnServer: false
         }
       });
@@ -25,8 +26,8 @@ define([
         validation: {
           name: {
             required: true,
-            pattern: 'Имя исполнителя',
-            msg: 'обязательное поле'
+            minLength: 3,
+            msg: 'Слишком короткий(мин. 3 символа)'
           }
         }
       });
@@ -129,8 +130,8 @@ define([
         return API.getArtistEntity(id, options)
       });
 
-      App.reqres.setHandler('artist:entity:new', function (id, options) {
-        return new Entities.Contact();
+      App.reqres.setHandler('artist:entity:new', function () {
+        return new Entities.Artist();
       })
     });
     return;

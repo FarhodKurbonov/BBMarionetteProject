@@ -6681,29 +6681,29 @@ body > .wrap {
 #header .container {
   width: 940px; }
 
-/* line 2, components/apps/_main.scss */
+/* line 1, components/apps/_main.scss */
 .container {
   width: 1200px; }
 
-/* line 6, components/apps/_main.scss */
+/* line 5, components/apps/_main.scss */
 body content#main-region .container {
   min-height: 600px; }
 
-/* line 10, components/apps/_main.scss */
+/* line 9, components/apps/_main.scss */
 .navbar {
   border-radius: 0;
   margin-bottom: 0; }
 
-/* line 14, components/apps/_main.scss */
+/* line 13, components/apps/_main.scss */
 .navbar-form {
   padding-top: 3px;
   width: 300px; }
 
-/* line 18, components/apps/_main.scss */
+/* line 17, components/apps/_main.scss */
 .navbar-form .input-group {
   width: 100%; }
 
-/* line 21, components/apps/_main.scss */
+/* line 20, components/apps/_main.scss */
 .navbar-form .input-group > .form-control, .navbar-form .input-group .input-group-btn > button {
   background: #eee;
   border: 1px solid #e5e5e5;
@@ -6711,54 +6711,54 @@ body content#main-region .container {
   box-shadow: none;
   font-size: 14px; }
 
-/* line 28, components/apps/_main.scss */
+/* line 27, components/apps/_main.scss */
 .navbar-form .input-group > .form-control:focus {
   background: #fff; }
 
-/* line 34, components/apps/_main.scss */
+/* line 33, components/apps/_main.scss */
 body {
   background: #f6f6f6; }
 
-/* line 38, components/apps/_main.scss */
+/* line 37, components/apps/_main.scss */
 body content#main-region div.container {
   background: #fff;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.15);
   padding: 20px 10px; }
 
-/* line 43, components/apps/_main.scss */
+/* line 42, components/apps/_main.scss */
 a:hover {
   text-decoration: none; }
 
-/* line 47, components/apps/_main.scss */
+/* line 46, components/apps/_main.scss */
 pre.lyrics {
   border: none;
   background: transparent; }
 
-/* line 52, components/apps/_main.scss */
+/* line 51, components/apps/_main.scss */
 .breadcrumb {
   background: transparent;
   text-transform: uppercase;
   font-size: 15px;
   padding: 0 15px; }
 
-/* line 59, components/apps/_main.scss */
+/* line 58, components/apps/_main.scss */
 .img-artist, .img-album {
   border-radius: 4px;
   float: left;
   margin: 20px;
   width: 80px; }
 
-/* line 65, components/apps/_main.scss */
+/* line 64, components/apps/_main.scss */
 .img-album {
   width: 150px;
   border-radius: 2px;
   margin: 0 20px; }
 
-/* line 71, components/apps/_main.scss */
+/* line 70, components/apps/_main.scss */
 .img-round {
   border-radius: 4px; }
 
-/* line 75, components/apps/_main.scss */
+/* line 74, components/apps/_main.scss */
 .list-letter {
   font-size: 14px;
   text-transform: uppercase;
@@ -6766,16 +6766,16 @@ pre.lyrics {
   float: left;
   margin: 0px 2px 0 2px; }
 
-/* line 83, components/apps/_main.scss */
+/* line 82, components/apps/_main.scss */
 .page-header {
   margin: 0 0 0 0;
   border-bottom: none; }
 
-/* line 88, components/apps/_main.scss */
+/* line 87, components/apps/_main.scss */
 .page-header h1 {
   color: #ed195a; }
 
-/* line 92, components/apps/_main.scss */
+/* line 91, components/apps/_main.scss */
 .page-header h1 span {
   color: #666;
   font-weight: lighter;
@@ -6783,11 +6783,11 @@ pre.lyrics {
   text-transform: lowercase;
   font-size: 80%; }
 
-/* line 100, components/apps/_main.scss */
+/* line 99, components/apps/_main.scss */
 .media-list .media {
   margin-bottom: 20px; }
 
-/* line 104, components/apps/_main.scss */
+/* line 103, components/apps/_main.scss */
 .thumbnail {
   vertical-align: top;
   max-width: 150px;
@@ -6796,17 +6796,17 @@ pre.lyrics {
   box-shadow: none;
   border: none; }
 
-/* line 112, components/apps/_main.scss */
+/* line 111, components/apps/_main.scss */
 .thumbnail .caption {
   padding: 0; }
 
-/* line 116, components/apps/_main.scss */
+/* line 115, components/apps/_main.scss */
 h3 small {
   display: block;
   font-size: 14px;
   padding-top: 2px; }
 
-/* line 124, components/apps/_main.scss */
+/* line 123, components/apps/_main.scss */
 #search-result {
   display: none;
   position: absolute;
@@ -6816,19 +6816,19 @@ h3 small {
   border-radius: 3px;
   margin-top: 10px; }
 
-/* line 133, components/apps/_main.scss */
+/* line 132, components/apps/_main.scss */
 .search-result-index {
   left: 10%;
   width: 80%;
   margin-top: 0 !important; }
 
-/* line 139, components/apps/_main.scss */
+/* line 138, components/apps/_main.scss */
 #search-result .list-group {
   margin-bottom: 0;
   border-bottom: 1px solid #292929;
   border-top: 1px solid #3d3d3d; }
 
-/* line 144, components/apps/_main.scss */
+/* line 143, components/apps/_main.scss */
 #search-result .list-group h6 {
   position: absolute;
   float: left;
@@ -6836,7 +6836,7 @@ h3 small {
   font-weight: normal;
   color: #fff; }
 
-/* line 151, components/apps/_main.scss */
+/* line 150, components/apps/_main.scss */
 #search-result .list-group a {
   background: transparent;
   border: none;
@@ -6845,30 +6845,30 @@ h3 small {
   color: #fff;
   font-size: 13px; }
 
-/* line 159, components/apps/_main.scss */
+/* line 158, components/apps/_main.scss */
 #search-result .list-group a:hover {
   background: #428bca; }
 
-/* line 162, components/apps/_main.scss */
+/* line 161, components/apps/_main.scss */
 #search-result .list-group a span {
   color: #999;
   font-size: 11px; }
 
-/* line 166, components/apps/_main.scss */
+/* line 165, components/apps/_main.scss */
 #search-result .list-group a img {
   margin: 3px 10px; }
 
-/* line 169, components/apps/_main.scss */
+/* line 168, components/apps/_main.scss */
 #search-result .list-group-item {
   padding: 5px 15px; }
 
-/* line 173, components/apps/_main.scss */
+/* line 172, components/apps/_main.scss */
 .block-artist-images {
   width: 300px;
   float: right;
   margin-right: 10px; }
 
-/* line 179, components/apps/_main.scss */
+/* line 178, components/apps/_main.scss */
 .letters {
   float: left;
   width: 70px;
@@ -6879,7 +6879,7 @@ h3 small {
   text-transform: uppercase;
   font-size: 30px; }
 
-/* line 188, components/apps/_main.scss */
+/* line 187, components/apps/_main.scss */
 .social-buttons {
   float: right;
   margin: 0 40px 0 0;
@@ -6887,7 +6887,7 @@ h3 small {
   height: 30px;
   font-size: 30px; }
 
-/* line 195, components/apps/_main.scss */
+/* line 194, components/apps/_main.scss */
 .social-buttons i {
   cursor: pointer; }
 

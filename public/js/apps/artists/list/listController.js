@@ -42,8 +42,8 @@ define([
                     mainView  : View.Letters
                   });
                   var contentHeader = new ViewsCommon.ContentHeader({
-                    //letter       : artists.models.get('letter'),
-                    //famousArtists: artists.models.slice(0, 7)
+                    letter       : artists.models[0].get('letter'),
+                    famousArtists: artists.models.slice(0, 7)
                   });
                   artists.goTo(options.page);
                   var contentMain = new ViewsCommon.ContentMain({
@@ -65,67 +65,69 @@ define([
                     App.trigger('artists:filter', _.clone(artists.parameters.attributes));
                   });
 
-                 self.listenTo(contentMain, 'childview:artist:delete', function (childView, model) {
+                  self.listenTo(contentMain, 'childview:artist:delete', function (childView, model) {
                   model.model.destroy();//тоже самое что models.collection.remove(models)
                  });
 
                   self.listenTo(Layout, 'show', function() {
                     Layout.leftBarRegion.show(lettersListView);
-                    Layout.contentHeaderRegion.show(contentHeader.render());
+                    Layout.contentHeaderRegion.show(contentHeader);
                     Layout.panelRegion.show(panel);
                     Layout.artistsRegion.show(contentMain);
                   });
-                  /* self.listenTo(contactsListPanel, 'contact:new', function () {
-                    require(['apps/contacts/new/newView'], function (ContactsAppNew) { //Creating empty models
-                        var newContact = ContactManager.request('contact:entity:new');
 
-                        var view = new ContactsAppNew.Contact({
-                          model: newContact
-                        });
+                  self.listenTo(panel, 'artist:new', function () {
+                  require(['apps/artists/new/newView'], function (New) {
+                      var newArtist = App.request('artist:entity:new'); //Creating empty models
 
-                        self.listenTo(view, 'form:submit', function (data) {
-                          var contactSaved = newContact.save(data);
-                          if (contactSaved) {
-                            $.when(contactSaved)
-                              .done(function () {
-                                contacts.add(newContact);
-                                view.trigger('dialog:close');
-                                var newContactView = contactsListView.children.findByModel(newContact);
-                                if (newContactView) {
-                                  newContactView.flash('success')
-                                }
-                              })
-                              .fail(function (response) {
-                                if (response.status === 422) {
-                                  console.log('Произошла ошибка: ', response);
-                                  view.triggerMethod('form:data:invalid', response.errors);
-                                }
-                              });
-                          } else {
-                            view.triggerMethod('form:data:invalid', newContact.validationError)
-                          }
+                      var view = new New.Artist({
+                        model: newArtist
+                      });
 
-                        });
-                        ContactManager.dialogRegion.show(view);
-                      }
-                    )
-                  });*/
-                  /*self.listenTo(contactsListView, 'childview:contact:edit', function (childView, model) {
+                      self.listenTo(view, 'form:submit', function (data) {
+                        var artistSaved = newArtist.save(data);
+                        if (artistSaved) {
+                          $.when(artistSaved)
+                            .done(function () {
+                              artists.add(newArtist);
+                              view.trigger('dialog:close');
+/*                              var newArtistView = contentMain.children.findByModel(newArtist);
+                              if (newArtistView) {
+                                newArtistView.flash('success')
+                              }*/
+                            })
+                            .fail(function (response) {
+                              var keys = ['name'];
+                              if (response.status === 422) {
+                                console.log('Произошла ошибка: ', response);
+                                view.triggerMethod('form:data:invalid', response.errors);
+                              }
+                            });
+                        } else {
+                          view.triggerMethod('form:data:invalid', newArtist.validationError)
+                        }
 
-                    require( ['apps/contacts/edit/editView'], function (editView) {
-                      var view = new editView.Contact({
+                      });
+                      App.dialogRegion.show(view);
+                    }
+                  )
+                });
+
+                  self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
+                    require( ['apps/artists/edit/editView'], function (Edit) {
+                      var view = new Edit.Artist({
                         model: model
                       });
 
                       view.on('form:submit', function (data) {
                         model.set(data, {silent: true});
-                        var upduateModel = model.save(data, {wait: true});
+                        var updateModel = model.save(data,{wait: true});
 
-                        if (upduateModel) {
+                        if (updateModel) {
                           view.onBeforeDestroy = function () {
                             model.set({changedOnServer: false});
                           };
-                          $.when(upduateModel)
+                          $.when(updateModel)
                             .done(function () {
                               childView.render();
                               delete view.onDestroy;
@@ -137,14 +139,13 @@ define([
                                 model.set(model.previousAttributes());
                               };
                               if (response.status === 422) {
-                                var keys = ['firstName', 'lastName', 'phone'];
+                                var keys = ['name', 'avatar'];
                                 model.refresh(response.entity, keys);
                                 view.render();
                                 view.triggerMethod('form:data:invalid', response.errors);
                                 model.set(response.entity, {silent: true});
 
                               }
-
                             });
                         } else {
                           view.onDestroy = function () {
@@ -154,10 +155,9 @@ define([
                         }
                       });
 
-                      ContactManager.dialogRegion.show(view)
+                      App.dialogRegion.show(view)
                     })
-                  });*/
-                  
+                  });
 
                   App.mainRegion.show(Layout);
                 });

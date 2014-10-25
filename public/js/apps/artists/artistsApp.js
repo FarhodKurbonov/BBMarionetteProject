@@ -30,8 +30,7 @@ define(['app'], function(App) {
   App.module('Routers.ArtistsApp', function(RoutersArtistsApp, App, Backbone, Marionette, $, _) {
     RoutersArtistsApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
-        'artists/:letter(/filter/:params)': 'listArtists',
-        'artists/:letter/edit': 'editArtist'
+        'artists/:letter(/filter/:params)': 'listArtists'
       }
     });
     var lt;//<-- this variable save for using to page navigate
@@ -92,18 +91,8 @@ define(['app'], function(App) {
           _executeAction(ListController.listArtists, options);
           //App.execute('set:active:header', 'artists');
         })
-      },
-      editArtist: function(){
-        require(['apps/contacts/edit/editController'], function (EditController) {
-          _executeAction(EditController.editContact, id);
-          App.execute('set:active:header', 'artists');
-        })
       }
     };
-    this.listenTo(App, 'artist:edit', function (id) {
-      App.navigate('contacts/' + id + '/edit');
-      API.editArtist(id);
-    });
     this.listenTo(App, 'page:change', function (options) {
       App.navigate('artists/'+ lt +'/filter/' + serializeParams(options));
     });

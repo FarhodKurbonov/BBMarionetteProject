@@ -39,11 +39,12 @@ var schema  = new Schema({
   },
   letterId: {
     type: Schema.Types.ObjectId,
-    ref: 'Letter'
+
   },
   createdAt: {
     type: Date,
-    get : isoDate
+    get : isoDate,
+    default: Date.now
   },
   avatar: {
     type: String
@@ -62,17 +63,28 @@ var schema  = new Schema({
   }
 });
 
-/*schema.statics.create = function(data, callback) {
-  var Contact = this;
-  var newContact = new Contact(data);
-  newContact.save(function(err, result) {
+schema.statics.create = function(data, callback) {
+  var Artist = this;
+  var firstLetter = data.name.charAt(0).toLowerCase();
+  Letter.find({letter: firstLetter}).exec(function(err, result) {
     if(err) return callback(err);
-    //result = result.map(function (contact) {
-    var cont =  result.toObject();
-    //});
-    return callback(null, cont)
-  })
-};*/
+    result = result[0].toObject();
+    data.letterId = result.id;
+    Artist.find({name: data.name}).exec(function(err, result) {
+      if(err) callback(err);
+      if(result.length == 0){
+        var newArtist = new Artist(data);
+        newArtist.save(function(err, result) {
+          if(err) return callback(err);
+          var art =  result.toObject();
+          return callback(null, art)
+        })
+      } else {
+        callback(new ArtistError('Такой артист уже существует'))
+      }
+    })
+  });
+};
 
 schema.statics.fetch = function(data, callback) {
   var Artist = this;
@@ -80,16 +92,29 @@ schema.statics.fetch = function(data, callback) {
     data = data[0];
   }
   if(data.parentID) {
-    Letter.find({letter: data.parentID}).exec(function(err, result) {
+    Letter.find({letter: data.parentID}).exec(function(err, letter) {
       if(err) return callback(err);
-      result = result[0].toObject();
-      Artist.find({letterId: result._id}).exec(function(err, result) {
+      letter = letter[0].toObject();
+      Artist.find({letterId: letter._id}).exec(function(err, artists) {
         if(err) return callback(err);
-        result = result.map(function (contact) {
-          var cont =  contact.toObject();
-          return cont;
+
+        artists = artists.map(function (artist) {
+          var art =  artist.toObject();
+          return art;
         });
-          return callback(err, result);
+        function tracksInArtist(artist, callback){
+          Track.count({artistId: artist._id}, function(err, count) {
+            artist.count = count;
+            artist.letter = artist.name.charAt(0)
+            return callback(null, artist);
+          });
+
+
+        }
+        async.map(artists, tracksInArtist, function(err, results) {
+          return callback(err, results);
+        });
+
       })
     });
   } else {
@@ -103,7 +128,6 @@ schema.statics.fetch = function(data, callback) {
   }
 };
 
-
 schema.statics.deleteArtist = function(data, callback) {
   var Artist = this;
   Track.remove({artistId: data.id}, function(err, result) {
@@ -115,19 +139,10 @@ schema.statics.deleteArtist = function(data, callback) {
       })
   });
 };
-/*
-schema.statics.update = function(data, callback) {
-  var Contact = this;
 
-  Contact.findById(data.id, function(err, result) {
-    if(data.relation) {
-      result.acquaintances.push( new ObjectID(data.acquaintedID) );
-      result.save(function(err, contact) {
-        if(err) return callback(err, oldEntity);
-        var cont =  contact.toObject();
-        return callback(null, cont)
-      });
-    }
+schema.statics.update = function(data, callback) {
+  var Artist = this;
+  Artist.findById(data.id, function(err, result) {
     //Сохраняем значение до изменения
     //если произойдеть ошибка то вернуть последнее сохраненное
     //значение из базы
@@ -137,18 +152,16 @@ schema.statics.update = function(data, callback) {
     var oldEntity = result.toObject();
 
     //Обновляем
-    result.firstName= data.firstName;
-    result.lastName = data.lastName;
-    result.phone = data.phone;
-    result.save(function(err, contact) {
+    result.name= data.name;
+    result.avatar = data.avatar;
+    result.save(function(err, artist) {
       if(err) return callback(err, oldEntity);
-      var cont =  contact.toObject();
-      return callback(null, cont)
+      var art =  artist.toObject();
+      return callback(null, art);
     });
 
   })
 };
-;*/
 
 exports.Artist = mongoose.model('Artist', schema);
 exports.ArtistError = ArtistError;

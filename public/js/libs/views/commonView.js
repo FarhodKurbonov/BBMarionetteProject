@@ -1,13 +1,17 @@
 define(['app',
   'libs/views/_base/ItemView',
+  'libs/views/_base/CompositeView',
   'libs/views/_base/LayoutView',
   'tpl!libs/views/templates/loadingView.tpl',
   'tpl!libs/views/templates/ru_en_Layout.tpl',
   'tpl!libs/views/templates/ContentHeaderLayout.tpl',
   'tpl!libs/views/templates/contentMainLayout.tpl',
   'tpl!libs/views/templates/paginationControls.tpl',
+  'tpl!libs/views/templates/thumbnail.tpl',
+  'tpl!libs/views/templates/thumbnails.tpl',
+  'tpl!libs/views/templates/pageHeader.tpl',
   'spin.jquery'
-], function (App, /*Marionette Views->*/ItemView, LayoutView, /*Templates->*/loadingView, ru_en_tpl, ContentHeaderLayout, ContentMainLayout, pageControlTpl) {
+], function (App, /*Marionette Views->*/ItemView, CompositeView, LayoutView, /*Templates->*/loadingView, ru_en_tpl, ContentHeaderLayout, ContentMainLayout, pageControlTpl, thumbnailTpl, thumbnailsTpl, pageHeaderTpl) {
   App.module("Views.Common", function (Common, ContactManager, Backbone, Marionette, $, _) {
     /**
      * Используется для анимации во время загрузки данных с сервера
@@ -104,18 +108,43 @@ define(['app',
       }
     });
 
-    Common.ContentHeader = ItemView.extend({
-      template: ContentHeaderLayout
-/*      regions: {
-        pageHeaderRegion: '',
-        thumbnailsRegion: ''
+    Common.ContentHeader = LayoutView.extend({
+      template: ContentHeaderLayout,
+      regions: {
+        pageHeaderRegion: '#page-header',
+        thumbnailsRegion: '#thumbnails'
       },
       initialize: function (options) {
-        var letter        = options.letter;
-        var famousArtists = options.famousArtists
+        var letter     = options.famousArtists[0];
+        var famousCollection = options.famousArtists;
+         var pageHeader = new Common.PageHeader({
+           model: letter
+         });
+        var thumbnails  = new Common.Thumbnails({
+          collection: new Backbone.Collection(famousCollection)
+        });
 
-      }*/
+        this.on('show', function() {
+          this.pageHeaderRegion.show(pageHeader);
+          this.thumbnailsRegion.show(thumbnails);
+        })
+
+
+      }
     });
+    Common.PageHeader = ItemView.extend({
+      template: pageHeaderTpl
+    });
+    Common.Thumbnail = ItemView.extend({
+      template: thumbnailTpl,
+      className: 'thumbnail'
+    });
+    Common.Thumbnails = CompositeView.extend({
+      template: thumbnailsTpl,
+      childView: Common.Thumbnail,
+      childViewContainer: 'div.thbs'
+    });
+
 
     Common.ContentMain   = LayoutView.extend({
       template: ContentMainLayout,

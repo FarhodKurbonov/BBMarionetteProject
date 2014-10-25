@@ -10,6 +10,7 @@ module.exports = function(server) {
   var io = require('socket.io').listen(server);
 
   io.sockets.on('connection', function (socket) {
+
     socket.on('letters:read', function(data, callback) {
       Letter.fetch(data, function(err, result) {
         if(err) {
@@ -18,6 +19,35 @@ module.exports = function(server) {
           return callback(null, result);
         }
       })
+    });
+
+    socket.on('artists:create', function (data, response) {
+      //Сохранить данные в базу Artists
+      //Если нет есть ошибки сгенерировать ошибку иначе
+      //отправить данные обратно к клиенту(Backbone) via response
+      Artist.create(data, function(err, result){
+        if(err) {
+          var error = {};
+          if(err.name === 'MongoError') {
+            error.nameError = err.message;
+            if(err.errors.name) error.name = err.errors.name.message;
+            if(err.errors.avatar) error.avatar =err.errors.name.message;
+            return response({
+              status: 422,
+              errors: error
+            });
+          }
+          if(err.name === 'ArtistError') {
+            error.name = err.message;
+            return response({
+              status: 422,
+              errors: error
+            });
+          }
+        } else {
+          return response(null, result);
+        }
+      });
     });
 
     socket.on('artists:read', function(data, callback) {
@@ -31,94 +61,66 @@ module.exports = function(server) {
 
     });
 
-    socket.on('artists:delete', function(artist, response) {
+    socket.on('artists:update', function(artist, callback) {
+      //Обновить контакт
+      //Отправить обратно the result
+      Artist.update(artist, function(err, artist){
+
+        if(err) {
+          var error = {};
+          if(err.name == "MongoError") {
+            error.name = err.message;
+            return callback({
+              status: 422,
+              errors: error,
+              entity: artist
+            });
+          }
+          //debugger;
+          if(err.errors.name) error.name = err.errors.name.message;
+          if(err.errors.avatar) error.avatar = err.errors.avatar.message;
+
+          return callback({
+            status: 422,
+            errors: error,
+            entity: artist
+          });
+        } else {
+          return callback(null, artist);
+        }
+      });
+
+    });
+
+    socket.on('artists:delete', function(artist, callback) {
       //Удаляем контакт
       //Отправить обратно the result
       Artist.deleteArtist(artist, function(err, artist) {
 
         if(err) {
-          return response(new SocketError(404, err.message));
+          return callback(new SocketError(404, err.message));
         }
-        return response(null, artist);
+         return callback(null, artist);
       });
     });
 
-/*
-    socket.on('contacts:create', function (data, response) {
-      //Сохранить данные в базу Contacts
-      //Если нет есть ошибки сгенерировать ошибку иначе
-      //отправить данные обратно к клиенту(Backbone) via response
-      Contact.create(data, function(err, result){
-        if(err) {
-          var error = {};
-          if(err.name == "MongoError") {
-            error.phone = err.message;
-            return response({
-              status: 422,
-              errors: error
-            });
-          }
-          if(err.errors.firstName) error.firstName = err.errors.firstName.message;
-          if(err.errors.lastName) error.lastName =err.errors.lastName.message;
-          return response({
-            status: 422,
-            errors: error
+    socket.on('tracks:read', function(data, response) {
+          //Создать массив контактов и отправить их к клиету
+          //Push all results in array
+          //response the results
+          Contact.fetch(data, function(err, result){
+            if(err) {
+              response({
+                status: 404,
+                responseText: 'Not Found this contact'
+              })
+            }else {
+              return response(null, result);
+            }
+
           });
-        }else {
-          return response(null, result);
-        }
-      });
-    });
+        });
 
-    socket.on('contacts:read', function(data, response) {
-      //Создать массив контактов и отправить их к клиету
-      //Push all results in array
-      //response the results
-      Contact.fetch(data, function(err, result){
-        if(err) {
-          response({
-            status: 404,
-            responseText: 'Not Found this contact'
-          })
-        }else {
-          return response(null, result);
-        }
-
-      });
-    });
-
-    socket.on('contacts:update', function(contact, response) {
-      //Обновить контакт
-      //Отправить обратно the result
-      Contact.update(contact, function(err, contact){
-
-        if(err) {
-          var error = {};
-          if(err.name == "MongoError") {
-            error.phone = err.message;
-            return response({
-              status: 422,
-              errors: error,
-              entity: contact
-            });
-          }
-          //debugger;
-          if(err.errors.firstName) error.firstName = err.errors.firstName.message;
-          if(err.errors.lastName) error.lastName = err.errors.lastName.message;
-
-          return response({
-            status: 422,
-            errors: error,
-            entity: contact
-          });
-        } else {
-          return response(null, contact);
-        }
-      });
-
-    });
-
-*/
   });
 
   return io

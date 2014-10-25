@@ -75,10 +75,9 @@ define(['app',
        * @export
        */
       showClicked: function (e) {
-        /*e.preventDefault();*/
         e.stopPropagation();
         this.highlight('label-warning');
-        /*this.trigger('letter:show', this.model);*/
+
       }
     });
     /**

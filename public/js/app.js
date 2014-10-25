@@ -1,9 +1,12 @@
-define(['marionette'], function (Marionette) {
+define(['marionette', 'libs/config/marionette/regions/dialog'], function (Marionette) {
   var App = new Marionette.Application();
   App.addRegions({
     headerRegion: '#header-region',
     mainRegion  : '#main-region',
-    footerRegion: '#footer-region'
+    footerRegion: '#footer-region',
+    dialogRegion: Marionette.Region.Dialog.extend({
+      el: '#dialog-region'
+    })
   });
   /**
    * Кастомная функция для обновления url состояния адресной строки

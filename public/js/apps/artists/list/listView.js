@@ -15,7 +15,7 @@ define(['app',
     List.Panel = ItemView.extend({
       template: panelTpl,
       triggers: {
-        'click button.js-new': 'contact:new'
+        'click button.js-new': 'artist:new'
       },
       events: {
         'submit #filter-form': 'filterContacts'
@@ -23,7 +23,7 @@ define(['app',
       ui: {
         criterion: 'input.js-filter-criterion'
       },
-      modelEvnts: {
+      modelEvents: {
         'change': 'render'
       },
 
@@ -91,7 +91,6 @@ define(['app',
       tagName: 'tr',
       template: artistItemTpl,
       events: {
-        /*'click .js-behavior-confirmable': 'remove',*/
         'click td a.js-edit': 'editClicked'
       },
       triggers: {
@@ -125,8 +124,8 @@ define(['app',
     });
 
     List.Artists = CompositeView.extend({
-      tagName: 'table',
-      className: 'table table-hover',
+      tagName: 'div',
+      className: 'table-responsive',
       template: artistsList,
       //emptyView: NoContactsView,
       childView: List.Artist,
