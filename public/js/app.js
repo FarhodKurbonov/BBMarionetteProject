@@ -43,7 +43,8 @@ define(['marionette', 'libs/config/marionette/regions/dialog'], function (Marion
     if(Backbone.history){
       require([
         'apps/landing/lettersApp',
-        'apps/artists/artistsApp'
+        'apps/artists/artistsApp',
+        'apps/tracks/tracksApp'
       ], function() {
        Backbone.history.start();
        if(App.getCurrenRouet() === '') {

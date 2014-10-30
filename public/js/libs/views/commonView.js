@@ -115,39 +115,72 @@ define(['app',
         thumbnailsRegion: '#thumbnails'
       },
       initialize: function (options) {
-        var letter     = options.famousArtists[0];
-        var famousCollection = options.famousArtists;
+        //if options.avatar is collection pluck only one model
+        //another get assignment model
+        var info = options.avatar[0] || options.avatar;
+        var avatars = options.avatar
+        var allOrSingleArtist = options.allOrSingleArtist;
          var pageHeader = new Common.PageHeader({
-           model: letter
+           allOrSingleArtist: allOrSingleArtist,
+           model: info
          });
         var thumbnails  = new Common.Thumbnails({
-          collection: new Backbone.Collection(famousCollection)
+          single: options.single,
+          collection: new Backbone.Collection(avatars)
         });
 
         this.on('show', function() {
           this.pageHeaderRegion.show(pageHeader);
           this.thumbnailsRegion.show(thumbnails);
         })
-
-
       }
     });
     Common.PageHeader = ItemView.extend({
-      template: pageHeaderTpl
+      template: pageHeaderTpl,
+      serializeData: function(options) {
+        var data = ItemView.prototype.serializeData.apply(this, arguments);
+        data.allOrSingleArtist = this.options.allOrSingleArtist;
+        console.dir(data.allOrSingleArtist);
+        return data;
+      }
     });
     Common.Thumbnail = ItemView.extend({
       template: thumbnailTpl,
-      className: 'thumbnail'
+      className: 'thumbnail',
+      initialize: function(options){
+        this.single = options.single
+      },
+      serializeData: function(options) {
+        var data = ItemView.prototype.serializeData.apply(this, arguments);
+        data.single = this.single;
+        console.dir(data.single);
+        return data;
+      }/*,
+      templateHelpers:  {
+        isSingle: function(){
+          return this.single
+        }
+
+      }*/
     });
     Common.Thumbnails = CompositeView.extend({
       template: thumbnailsTpl,
       childView: Common.Thumbnail,
-      childViewContainer: 'div.thbs'
+      childViewContainer: 'div.thbs',
+      initialize: function() {
+        this.single = this.options.single
+      },
+      childViewOptions: function(model, index) {
+         return {
+            single: this.options.single
+         }
+      }
     });
 
 
     Common.ContentMain   = LayoutView.extend({
       template: ContentMainLayout,
+
       regions: {
         paginationMainRegion: "#pagination-main-region",
         paginationControlsRegion: '#pagination-controls-region'
@@ -155,32 +188,34 @@ define(['app',
       initialize: function (options) {
         this.collection = options.collection;
         var eventsToPropagate = options.propagatedEvents || [];
-        var listArtists = new options.mainView({
+        var list = new options.mainView({
           collection: this.collection
-        });
-        var pageControls = new Common.PaginationControls({
-          paginatedCollection: this.collection,
-          urlBase: options.paginatedUrlBase
         });
 
         var self = this;
-        this.listenTo(pageControls, "page:change", function (page) {
-          self.trigger("change:page", page);
-        });
         _.each(eventsToPropagate, function (evt) {
-          self.listenTo(listArtists, evt, function (view, model) {
+          self.listenTo(list, evt, function (view, model) {
             self.trigger(evt, view, model);
           });
         });
 
         this.on("show", function () {
-          this.paginationMainRegion.show(listArtists);
-          this.paginationControlsRegion.show(pageControls);
+          this.paginationMainRegion.show(list);
         });
+
+        if(options.pager) {
+          var pageControls = new Common.PaginationControls({
+            paginatedCollection: this.collection,
+            urlBase: options.paginatedUrlBase
+          });
+          this.listenTo(pageControls, "page:change", function (page) {
+            self.trigger("change:page", page);
+          });
+          self.on('show', function() {
+            self.paginationControlsRegion.show(pageControls);
+          })
+        }
       }
-
-
-
     });
 
     Common.PaginationControls = Marionette.ItemView.extend({

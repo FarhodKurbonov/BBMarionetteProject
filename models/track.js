@@ -112,7 +112,7 @@ var schema  = new Schema({
   }
 });
 
-schema.statics.create = function(data, callback) {
+/*schema.statics.create = function(data, callback) {
   var Contact = this;
   var newContact = new Contact(data);
   newContact.save(function(err, result) {
@@ -122,58 +122,37 @@ schema.statics.create = function(data, callback) {
     //});
     return callback(null, cont)
   })
-};
+};*/
 
 schema.statics.fetch = function(data, callback) {
-  require('models/contact');
-  var Contact = this;
+  var Track = this;
   if(data[0]){
     data = data[0];
   }
-
-  if(data.id || data.parentID) {
-    if( data.relation ) {
-      var id = new ObjectID(data.parentID), cursor;
-      switch (data.relation) {
-        case 'acquaintances':
-          cursor = Contact.find( { acquaintances: id } );
-          break;
-        case 'strangers':
-
-          cursor = Contact.find({acquaintances: { $ne: id }});
-          break;
-      }
-      cursor.exec(function(err, result) {
-        if(err) return callback(err);
-        result = result.map(function (contact) {
-          var cont =  contact.toObject();
-          return cont;
-        });
-        return callback(err, result);
-      });
-
-    }
-    Contact.find({_id: data.id}).exec(function(err, result) {
+  if(data.parentID) {
+    Track.find({artistId: data.parentID}).exec(function(err, tracks) {
       if(err) return callback(err);
-      result = result.map(function (contact) {
-        var cont =  contact.toObject();
-        return cont;
+
+      tracks = tracks.map(function (track) {
+        var trk =  track.toObject();
+        return trk;
       });
-      callback(err, result[0]);
-    });
+        return callback(err, tracks);
+      })
+
   } else {
-    Contact.find({}).exec(function(err, result){
-      result = result.map(function (contact) {
-        var cont =  contact.toObject();
-        return cont;
+    Track.find({id: data.id}).exec(function(err, result) {
+      if(err) callback(err);
+      result = result.map(function (track) {
+        var trk =  track.toObject();
+        return trk;
       });
-      callback(err, result);
+        return callback(err, result)
     });
   }
-
 };
 
-schema.statics.update = function(data, callback) {
+/*schema.statics.update = function(data, callback) {
   var Contact = this;
 
   Contact.findById(data.id, function(err, result) {
@@ -204,9 +183,9 @@ schema.statics.update = function(data, callback) {
     });
 
   })
-};
+};*/
 
-schema.statics.deleteContact = function(data, callback) {
+/*schema.statics.deleteContact = function(data, callback) {
   var Contact = this;
   if(data.relation) {
 
@@ -223,7 +202,7 @@ schema.statics.deleteContact = function(data, callback) {
     var cont =  result.toObject();
     return callback(null, cont)
   })
-};
+};*/
 
 exports.Track = mongoose.model('Track', schema);
 exports.TrackError = TrackError;

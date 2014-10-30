@@ -2,90 +2,66 @@ define([
   'app',
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
-  'apps/artists/list/listView'
+  'apps/tracks/list/listView'
 ], function (App, ViewsCommon, Controllers, View) {
 
-  App.module('ArtistsApp.List', function(List, App, Backbone, Marionette, $, _) {
+  App.module('TracksApp.List', function(List, App, Backbone, Marionette, $, _) {
     /**
      * @type {Object.<Marionette.Controller>}
      * @extends {App.Controllers.Application}
      */
    var  Controller =  Controllers.extend({
-      listArtists: function(options) {
+      listTracks: function(options) {
         //Ожидание заргрузки
         var loadingView = new ViewsCommon.Loading();
         App.mainRegion.show(loadingView);
         //подгружаем все буквы и список артистов
-        require(['entities/artist', 'entities/letter'], function() {
-          var fetchArtists = App.request('artists:entities', options);
+        require(['entities/track', 'entities/letter', 'entities/artist'], function() {
+          var fetchArtist = App.request('artist:entity', options.id);
+          var fetchLetters = App.request('letters:entities');
+          var fetchTracks = App.request('tracks:entities', options);
           var Layout =  new View.Layout();
           var panel  =  new View.Panel();
           var self   = List.Controller;
 
-          $.when(fetchArtists)
-            .done(function(artists){
-              var fetchLetters = App.request('letters:entities');
-              $.when(fetchLetters)
-                .done(function(letters) {
-                  if (options.criterion) {
-                    artists.parameters.set({criterion: options.criterion});
-                    panel.once('show', function () {
-                      panel.triggerMethod('set:filter:criterion', options.criterion);
-                    });
-                  }
+          $.when(fetchArtist, fetchLetters, fetchTracks)
+            .done(function(artist, letters, tracks){
 
 
-                  var lettersListView = new ViewsCommon.RuEnView({
-                    collection: letters,
-                    mainView  : View.Letters
-                  });
-                  if(artists.models.length > 0) {
-                    var contentHeader = new ViewsCommon.ContentHeader({
-                      allOrSingleArtist: 'AllArtists',
-                      single: false,
-                      avatar: artists.models.slice(0, 7)
-                    });
+              var lettersListView = new ViewsCommon.RuEnView({
+                collection: letters,
+                mainView  : View.Letters
+              });
+              var contentHeader = new ViewsCommon.ContentHeader({
+                allOrSingleArtist: 'SingleArtist',
+                single: true,
+                avatar: artist
+              });
 
-                    self.listenTo(Layout, 'show', function(){
-                      Layout.contentHeaderRegion.show(contentHeader);
-                    })
+              var contentMain = new ViewsCommon.ContentMain({
+                collection: tracks,
+                mainView  : View.Outer,
+                pager: false,
+                propagatedEvents: [
+                  'childview:artist:edit',
+                  'childview:artist:delete'
 
-                  }
+                ]
+              });
 
-                  artists.goTo(options.page);
-                  var contentMain = new ViewsCommon.ContentMain({
-                    collection: artists,
-                    mainView  : View.Artists,
-                    pager: true,
-                    paginatedUrlBase: 'artists/'+options.firstLetter+'filter/',
-                    propagatedEvents: [
-                      'childview:artist:edit',
-                      'childview:artist:delete'
-
-                    ]
-                  });
-
-                  self.listenTo(panel, 'artists:filter', function (filterCriterion) {
-                    /**
-                     * Если произошла фильтрация то установить pagination control на страницу 1
-                     */
-                    artists.parameters.set({ page: 1, criterion: filterCriterion, letter: options.firstLetter});
-                    App.trigger('artists:filter', _.clone(artists.parameters.attributes));
-                  });
-
-                  self.listenTo(contentMain, 'childview:artist:delete', function (childView, model) {
+                  /*self.listenTo(contentMain, 'childview:artist:delete', function (childView, model) {
                   model.model.destroy();//тоже самое что models.collection.remove(models)
-                 });
-
+                 });*/
                   self.listenTo(Layout, 'show', function() {
                     Layout.leftBarRegion.show(lettersListView);
+                    Layout.contentHeaderRegion.show(contentHeader);
                     Layout.panelRegion.show(panel);
-                    Layout.artistsRegion.show(contentMain);
+                    Layout.tracksRegion.show(contentMain);
                   });
 
-                  self.listenTo(panel, 'artist:new', function () {
-                  require(['apps/artists/new/newView'], function (New) {
-                      var newArtist = App.request('artist:entity:new'); //Creating empty models
+                  self.listenTo(panel, 'track:new', function () {
+                  require(['apps/tracks/new/newView'], function (New) {
+                      var newTrack = App.request('track:entity:new'); //Creating empty models
 
                       var view = new New.Artist({
                         model: newArtist
@@ -98,10 +74,6 @@ define([
                             .done(function () {
                               artists.add(newArtist);
                               view.trigger('dialog:close');
-/*                              var newArtistView = contentMain.children.findByModel(newArtist);
-                              if (newArtistView) {
-                                newArtistView.flash('success')
-                              }*/
                             })
                             .fail(function (response) {
                               var keys = ['name'];
@@ -120,7 +92,7 @@ define([
                   )
                 });
 
-                  self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
+/*                  self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
                     require( ['apps/artists/edit/editView'], function (Edit) {
                       var view = new Edit.Artist({
                         model: model
@@ -164,10 +136,10 @@ define([
 
                       App.dialogRegion.show(view)
                     })
-                  });
+                  });*/
 
                   App.mainRegion.show(Layout);
-                });
+
 
 
             })
@@ -176,7 +148,7 @@ define([
             });
         })
       },
-      
+
       onDestroy: function() {
         console.info('Закрытие контроллера ArtistsApp.List.Controller');
       }
@@ -188,5 +160,5 @@ define([
     });
   });
 
-  return App.ArtistsApp.List.Controller
+  return App.TracksApp.List.Controller
 });

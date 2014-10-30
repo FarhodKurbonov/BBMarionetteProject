@@ -52,12 +52,11 @@ function createLetter(callback) {
 
                 {letter: 'а'}, {letter: 'б'}, {letter: 'в'}, {letter: 'г'},
                 {letter: 'д'}, {letter: 'е'}, {letter: 'ж'},{letter: 'з'},
-                {letter: 'и'}, {letter: 'й'}, {letter: 'к'}, {letter: 'л'},
-                {letter: 'м'}, {letter: 'н'}, {letter: 'о'}, {letter: 'п'},
-                {letter: 'р'}, {letter: 'с'}, {letter: 'т'}, {letter: 'у'},
-                {letter: 'ф'}, {letter: 'х'}, {letter: 'ц'}, {letter: 'ч'},
-                {letter: 'ш'}, {letter: 'щ'}, {letter: 'ы'}, {letter: 'э'},
-                {letter: 'ю'}, {letter: 'я'}
+                {letter: 'и'}, {letter: 'к'}, {letter: 'л'}, {letter: 'м'},
+                {letter: 'н'}, {letter: 'о'}, {letter: 'п'}, {letter: 'р'},
+                {letter: 'с'}, {letter: 'т'}, {letter: 'у'}, {letter: 'ф'},
+                {letter: 'х'}, {letter: 'ц'}, {letter: 'ч'}, {letter: 'ш'},
+                {letter: 'щ'}, {letter: 'э'}, {letter: 'ю'}, {letter: 'я'}
   ];
 
   async.each(letters, function(letterData, callback) {
@@ -69,7 +68,7 @@ function createLetter(callback) {
 function createArtist(callback) {
 
     var artists = [];
-    for(var i = 0; i < 500; i++ ) {
+    for(var i = 0; i < 300; i++ ) {
       var artist = {};
       artist.name = faker.Name.findName();
       artist.createdAt = new Date();
@@ -113,7 +112,8 @@ function createTrack(callback) {
 
       async.each(artistsID, function(artistID, callback) {
         var tracks = [];
-        for(var trackData = {}, i = 0 ; i < 20; i++ ) {
+        for(var i = 0 ; i < 30; i++ ) {
+          var trackData = {};
           trackData.name = faker.Name.findName();
           trackData.artistId = new ObjectID(artistID);
           tracks.push(trackData);

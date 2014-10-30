@@ -1,42 +1,39 @@
 define(['app'], function(App) {
   /**
-   * ArtistsApp Этот модуль запускается Routers.ArtistsApp модулем. Делается это для того
+   * TracksApp Этот модуль запускается Routers.TracksApp модулем. Делается это для того
    *            чтобы все модули не запускались автоматически при старте главного приложения "App"
    *            что позволяет гипко управлять модулями(выключая и или включая). Тем самым мы достигаем
    *            оптимизации используемой памяти освобождая ее от неизпользуемый данных которые модули
    *            загружают
    */
-  App.module('ArtistsApp', function(ArtistsApp, App, Backbone, Marionette, $, _) {
-    ArtistsApp.startWithParent = false;
+  App.module('TracksApp', function(TracksApp, App, Backbone, Marionette, $, _) {
+    TracksApp.startWithParent = false;
 
-    ArtistsApp.onStart = function() {
-      console.info('Start ArtistsApp!');
-
+    TracksApp.onStart = function() {
+      console.info('Start TracksApp!');
 
     };
     /**
      * Запускаем Модули Header and Footer
      */
-    ArtistsApp.addInitializer(function() {
-      App.module('HeaderApp').start();
-      App.module('FooterApp').start();
-    });
-    ArtistsApp.onStop = function () {
-      console.info('Stop ArtistsApp')
+
+    TracksApp.onStop = function () {
+      console.info('Stop TracksApp');
     };
 
   });
   /**
-   * RoutersArtistsApp  автоматически запускается при старте "App". В нем мы запускаем
-   *                    модуль ArtistsApp
+   * RoutersTracksApp  автоматически запускается при старте "App". В нем мы запускаем
+   *                    модуль TracksApp
    */
-  App.module('Routers.ArtistsApp', function(RoutersArtistsApp, App, Backbone, Marionette, $, _) {
-    RoutersArtistsApp.Router = Marionette.AppRouter.extend({
+  App.module('Routers.TracksApp', function(RoutersTracksApp, App, Backbone, Marionette, $, _) {
+    RoutersTracksApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
-        'artists/:letter(/filter/:params)': 'listArtists'
+        'tracks/:artist/:id(/filter/:params)': 'listTracks',
+        'tracks/:artist/track/:id/edit': 'editTrack',
+        'tracks/:artist/track/:id/show': 'showTrack'
       }
     });
-    var lt;//<-- this variable save for using to page navigate. Need for change
     /**
      * Преобразует данные для обработки Backbone.Paginator
      * Необходимо для реализации функционала фильтрации
@@ -76,68 +73,75 @@ define(['app'], function(App) {
     };
 
     /**
-     * Функция запускает необходимый модуль запускаем родительский модуль ArtistsApp
+     * Функция запускает необходимый модуль запускаем родительский модуль ContactsApp
      * а затем методы родительского модуля
      * @param {Object} action
      * @param {Object} args
      * @private
      */
     var _executeAction = function(action, args) {
-      App.startApp('ArtistsApp');
+      App.startApp('TracksApp');
       action(args);
     };
 
     var API = {
-      listArtists: function(letter, params) {
-        lt = letter;
+      listTracks: function(artist, id, params) {
         //----------Unwrap wrapper---------
         //Убираем обертку. Небоходимо для задуманной верстки макета
         var mainRegion = $('#main-region');
         if(mainRegion.parent().is('.wrap')){
           mainRegion.unwrap();
         }
-        //---------------Start ArtistsApp---------------------
-        require(['apps/artists/list/listController'], function(ListController) {
+
+        //---------------Start TracksApp---------------------
+        require(['apps/tracks/list/listController'], function(ListController) {
           var options = parseParams(params);
-              options.firstLetter = letter;//<--- вставили чтобы был доступ из других модулей
-          _executeAction(ListController.listArtists, options);
+          options.id = id;
+          options.artist = artist;
+          _executeAction(ListController.listTracks, options);
           //App.execute('set:active:header', 'artists');
         })
+      },
+      editTrack : function () {
+
+      },
+      showTrack: function() {
+
       }
     };
     /**
      * Обработчик события изменения номера страницы в pageControl
      */
-    this.listenTo(App, 'page:change', function (options) {
+/*    this.listenTo(App, 'page:change', function (options) {
       App.navigate('artists/'+ lt +'/filter/' + serializeParams(options));
-    });
+    });*/
     /**
      * Обработчик вывода списка артистов
      */
-    this.listenTo(App, 'artists:list', function (params) {
+/*    this.listenTo(App, 'artists:list', function (params) {
       console.log('Trigger->contacts:list');
       App.navigate('artists');
       API.listArtists(params);
-    });
+    });*/
     /**
      * Обработчик события фильтрации
      */
-    this.listenTo(App, 'artists:filter', function (options) {
+/*    this.listenTo(App, 'artists:filter', function (options) {
       if (options) {
         App.navigate('artists/' + options.letter + '/filter/' + serializeParams(options));
       } else {
         App.navigate('artists/' + options.letter);
       }
-    });
+    });*/
 
     /**
      * Привязываем роутер к API
      */
     App.addInitializer(function() {
-      new RoutersArtistsApp.Router({
+      new RoutersTracksApp.Router({
         controller: API
       })
     })
   });
-  return App.ArtistsApp;
+  return App.TracksApp;
 });

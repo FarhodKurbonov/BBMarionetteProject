@@ -4,7 +4,8 @@ var config    = require('config'),
   log         = require('libs/log.js')(module),
   SocketError = require('error'),
   Letter      = require('models/letter').Letter,
-  Artist      = require('models/artist').Artist;
+  Artist      = require('models/artist').Artist,
+  Track      = require('models/track').Track;
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
@@ -104,22 +105,15 @@ module.exports = function(server) {
       });
     });
 
-    socket.on('tracks:read', function(data, response) {
-          //Создать массив контактов и отправить их к клиету
-          //Push all results in array
-          //response the results
-          Contact.fetch(data, function(err, result){
-            if(err) {
-              response({
-                status: 404,
-                responseText: 'Not Found this contact'
-              })
-            }else {
-              return response(null, result);
-            }
-
-          });
-        });
+    socket.on('tracks:read', function(data, callback) {
+      Track.fetch(data, function(err, result) {
+        if(err) {
+          return callback(new SocketError(404, 'Not Found tracks'));
+        } else {
+          return callback(null, result)
+        }
+      });
+    });
 
   });
 

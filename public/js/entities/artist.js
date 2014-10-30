@@ -65,19 +65,12 @@ define([
             self.trigger('page:change:after');
           })
 
-        }
-/*        comparator: function (a, b) {
-          var aFirstName = a.get('firstName');
-          var bFirstName = b.get('firstName');
-          if (aFirstName === bFirstName) {
-            var aLastName = a.get('lastName');
-            var bLastName = b.get('lastName');
-            return  ( aLastName === bLastName) ? 0 :
-              (aLastName < bLastName) ? -1 : 1
-          } else {
-            return (aFirstName < bFirstName) ? -1 : 1
+        },
+        comparator: function (a, b) {
+          var aName = a.get('name');
+          var bName = b.get('name');
+            return (aName < bName) ? -1 : 1
           }
-        }*/
       });
 
       var API = {
@@ -104,15 +97,15 @@ define([
           });
           return defer.promise();
         },
-        getArtistEntity: function (contactId, options) {
-          var contact = new Entities.Artist({id: contactId});
+        getArtistEntity: function (artistId, options) {
+          var artist = new Entities.Artist({id: artistId});
           var defer = $.Deferred();
           options || (options = {});
           defer.then(options.success, options.error);
-          var response = contact.fetch(_.omit(options, 'success', 'error'));
+          var response = artist.fetch(_.omit(options, 'success', 'error'));
           $.when(response).done(function () {
 
-            defer.resolveWith(response, [contact]);
+            defer.resolveWith(response, [artist]);
 
           }).fail(function () {
               defer.rejectWith(response, arguments);

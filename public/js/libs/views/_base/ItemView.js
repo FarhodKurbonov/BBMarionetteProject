@@ -32,6 +32,7 @@ define(['app'], function (App) {
         this.$el.toggleClass(toggleClassName);
         this.trigger('artist:data', this.model)
       }
+
     });
   });
   return App.Views.ItemView;

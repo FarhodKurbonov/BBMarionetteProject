@@ -1,0 +1,1 @@
+<button class="btn btn-default btn-sm js-new">Добавить</button>

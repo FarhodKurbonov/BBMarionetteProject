@@ -46,23 +46,13 @@ define(['app'], function(App) {
           _executeAction(ListController.listLetters, {});
         })
       }
-/*      listArtists: function(id) {
-        require([], function(){
-
-        });
-       App.trigger('artists:list', model.get('id'));
-      }*/
     };
     //Запускаем landingPage
     this.listenTo(App, 'letters:list', function() {
       App.navigate('letters');
       API.listLetters()
     });
-    //Выводим список артистов выбранной буквы
-/*    this.listenTo(App, 'letter:show', function(id) {
-      App.navigate('letters/'+id);
-      API.listArtists(id);
-    });*/
+
 
     /**
      * Привязываем роутер к API

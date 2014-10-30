@@ -2,41 +2,38 @@ define(['app',
   'libs/views/_base/ItemView',
   'libs/views/_base/CompositeView',
   'libs/views/_base/LayoutView',
-  'tpl!apps/artists/list/templates/layout.tpl',
-  'tpl!apps/artists/list/templates/_letterItem.tpl',
-  'tpl!apps/artists/list/templates/_letters.tpl',
-  'tpl!apps/artists/list/templates/_artistItem.tpl',
+  'libs/views/_base/CollectionView',
+  'tpl!apps/tracks/list/templates/layout.tpl',
+  'tpl!apps/tracks/list/templates/_letterItem.tpl',
+  'tpl!apps/tracks/list/templates/_letters.tpl',
+  'tpl!apps/tracks/list/templates/_trackItem.tpl',
   'tpl!apps/artists/list/templates/_artists.tpl',
-  'tpl!apps/artists/list/templates/panelTpl.tpl',
-  'tpl!apps/artists/list/templates/empty.tpl',
+  'tpl!apps/tracks/list/templates/panelTpl.tpl',
+  'tpl!apps/tracks/list/templates/_tracks.tpl',
+  'tpl!apps/tracks/list/templates/_empty.tpl',
   'libs/behaviors/behaviors'
 
-],function(App,/*Views*/ ItemView, CompositeView, LayoutView,/*Templates*/ layoutTpl, letterItemTpl, lettersTpl,  artistItemTpl, artistsList, panelTpl, emptyTpl) {
-  App.module("ArtistsApp.List", function (List, App, Backbone, Marionette, $, _) {
+],function(App,/*Views*/ ItemView, CompositeView, LayoutView, CollectionView,/*Templates*/ layoutTpl, letterItemTpl, lettersTpl,  trackItemTpl, artistsList, panelTpl, tracksTpl, emptyTpl) {
+  App.module("TracksApp.List", function (List, App, Backbone, Marionette, $, _) {
     List.Empty = ItemView.extend({
       template: emptyTpl,
       tagName: 'tr',
       class: 'alert'
     });
+
     List.Panel = ItemView.extend({
       template: panelTpl,
       triggers: {
-        'click button.js-new': 'artist:new'
-      },
-      events: {
-        'submit #filter-form': 'filterArtists'
-      },
-      ui: {
-        criterion: 'input.js-filter-criterion'
+        'click button.js-new': 'track:new'
       },
       modelEvents: {
         'change': 'render'
       },
 
-      filterArtists: function (event){
+      filterTracks: function (event) {
         event.preventDefault();
         var criterion = this.$('.js-filter-criterion').val();
-        this.trigger('artists:filter', criterion);
+        this.trigger('tracks:filter', criterion);
       },
       onSetFilterCriterion: function (criterion) {
         this.ui.criterion.val(criterion);
@@ -55,7 +52,7 @@ define(['app',
         leftBarRegion       : "#leftbar-region",
         contentHeaderRegion : "#content-header-region",
         panelRegion         : "#panel-region",
-        artistsRegion       : "#artists-region"
+        tracksRegion       :  "#tracks-region"
       }
     });
     /**
@@ -83,7 +80,7 @@ define(['app',
       }
     });
     /**
-     * Генерит вид состоящий из списка
+     * Генерит вид состоящий из списка букв
      * @type {Object.<Marionette.CompositeView>}
      * @extends {App.Views.CompositeView}
      */
@@ -93,14 +90,16 @@ define(['app',
       childViewContainer: 'ul'
     });
 
-    List.Artist  = ItemView.extend({
+    List.Track  = ItemView.extend({
       tagName: 'tr',
-      template: artistItemTpl,
+      template: trackItemTpl,
       events: {
         'click td a.js-edit': 'editClicked'
       },
       triggers: {
         "click td a.js-show": {
+          event: "contact:show",
+          preventDefault: true,
           stopPropagation: true
         }
       },
@@ -113,7 +112,7 @@ define(['app',
          }
        }
     });
-    _.extend(List.Artist.prototype, {
+    _.extend(List.Track.prototype, {
       remove: function () {
         var self = this;
         this.$el.fadeOut(function () {
@@ -127,15 +126,15 @@ define(['app',
       }
     });
 
-    List.Artists = CompositeView.extend({
-      tagName: 'div',
-      className: 'table-responsive',
-      template: artistsList,
-      emptyView: List.Empty,
-      childView: List.Artist,
+    List.Tracks = CompositeView.extend({
+      template: tracksTpl,
+      className: 'media',
+      tagName: 'li',
+      childView: List.Track,
       childViewContainer: 'tbody',
 
       initialize: function () {
+        this.collection = this.model.get('list');
         this.listenTo(this.collection, 'reset', function () {
           this.appendHtml = function (collectionView, itemView, index) {
             collectionView.$el.append(itemView.el)
@@ -148,8 +147,15 @@ define(['app',
           collectionView.$el.prepend(itemView.el);
         }
       }
+
+    });
+    List.Outer = CollectionView.extend({
+      className: 'media-list',
+      tagName: 'ul',
+      emptyView: List.Empty,
+      childView: List.Tracks
     });
 
   });
-  return App.ArtistsApp.List;
+  return App.TracksApp.List;
 });

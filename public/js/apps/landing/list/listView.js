@@ -77,8 +77,7 @@ define(['app',
       showClicked: function (e) {
         e.stopPropagation();
         this.highlight('label-warning');
-
-      }
+}
     });
     /**
      * Генерит вид состоящий из списка

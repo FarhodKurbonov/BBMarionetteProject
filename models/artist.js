@@ -92,12 +92,13 @@ schema.statics.fetch = function(data, callback) {
     data = data[0];
   }
   if(data.parentID) {
+
     Letter.find({letter: data.parentID}).exec(function(err, letter) {
       if(err) return callback(err);
       letter = letter[0].toObject();
+
       Artist.find({letterId: letter._id}).exec(function(err, artists) {
         if(err) return callback(err);
-
         artists = artists.map(function (artist) {
           var art =  artist.toObject();
           return art;
@@ -105,25 +106,28 @@ schema.statics.fetch = function(data, callback) {
         function tracksInArtist(artist, callback){
           Track.count({artistId: artist._id}, function(err, count) {
             artist.count = count;
-            artist.letter = artist.name.charAt(0)
+            artist.letter = artist.name.charAt(0);
             return callback(null, artist);
-          });
-
-
-        }
+        });
+}
         async.map(artists, tracksInArtist, function(err, results) {
           return callback(err, results);
         });
-
       })
     });
   } else {
-    Artist.find({}).exec(function(err, result){
-      result = result.map(function (contact) {
-        var cont =  contact.toObject();
-        return cont;
+
+    Artist.find({id: data.id}).exec(function(err, result){
+      if(err) callback(err);
+      result = result.map(function (artist) {
+        var art =  artist.toObject();
+        return art;
       });
-      callback(err, result);
+
+      Track.count({artistId: data.id}, function(err, count) {
+        result[0].count = count;
+        return callback(err, result[0]);
+      });
     });
   }
 };
