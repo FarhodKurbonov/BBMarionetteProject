@@ -78,12 +78,12 @@
 //** Load fonts from this directory.
 
 // [converter] Asset helpers such as Sprockets and Node.js Mincer do not resolve relative paths
-// $icon-font-path: if($bootstrap-sass-asset-helper, "bootstrap/", "../fonts/bootstrap/")
+$icon-font-path: if($bootstrap-sass-asset-helper, "bootstrap/", "../fonts/bootstrap/")
 
 //** File name for all font files.
-// $icon-font-name:          "glyphicons-halflings-regular"
+ $icon-font-name:          "glyphicons-halflings-regular"
 //** Element ID within SVG icon file.
-// $icon-font-svg-id:        "glyphicons_halflingsregular"
+$icon-font-svg-id:        "glyphicons_halflingsregular"
 
 //== Components
 //

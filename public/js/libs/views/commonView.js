@@ -195,6 +195,7 @@ define(['app',
         var self = this;
         _.each(eventsToPropagate, function (evt) {
           self.listenTo(list, evt, function (view, model) {
+            //Слушем событие от compositeView и передаем ее tracks listController'у
             self.trigger(evt, view, model);
           });
         });

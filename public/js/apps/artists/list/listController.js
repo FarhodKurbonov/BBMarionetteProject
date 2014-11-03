@@ -2,8 +2,9 @@ define([
   'app',
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
-  'apps/artists/list/listView'
-], function (App, ViewsCommon, Controllers, View) {
+  'apps/artists/list/listView',
+  'tpl!apps/artists/common/dialogForm/form.tpl'
+], function (App, ViewsCommon, Controllers, View, dialogTpl) {
 
   App.module('ArtistsApp.List', function(List, App, Backbone, Marionette, $, _) {
     /**
@@ -88,6 +89,7 @@ define([
                       var newArtist = App.request('artist:entity:new'); //Creating empty models
 
                       var view = new New.Artist({
+                        template: dialogTpl,//Передали шаблон
                         model: newArtist
                       });
 
@@ -123,6 +125,7 @@ define([
                   self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
                     require( ['apps/artists/edit/editView'], function (Edit) {
                       var view = new Edit.Artist({
+                      template: dialogTpl,
                         model: model
                       });
 

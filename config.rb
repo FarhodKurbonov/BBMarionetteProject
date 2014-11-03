@@ -1,7 +1,5 @@
 require 'compass/import-once/activate'
 require 'bootstrap-sass'
-require 'compass-ui'
-require 'susy'
 
 http_path = "/"
 css_dir = 'public/css/'

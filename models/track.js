@@ -95,6 +95,12 @@ var schema  = new Schema({
 
   },
   vocal: {
+    type: Boolean
+  },
+  songText: {
+    type: String
+  },
+  youTubeLink: {
     type: String
   }
 
@@ -112,17 +118,36 @@ var schema  = new Schema({
   }
 });
 
-/*schema.statics.create = function(data, callback) {
-  var Contact = this;
-  var newContact = new Contact(data);
-  newContact.save(function(err, result) {
+schema.methods.saveTrack = function(data){
+
+};
+
+schema.statics.create = function(data, callback) {
+  var Track = this;
+
+  var newTrack = new Track();
+  newTrack.name = data.name || "";//Взяли имя
+  newTrack.artistId = data.artistId;
+  newTrack.url = '/mp3/' + data.trackName;
+  newTrack.bitRate = '';//Пока оставим пустым
+  //newTrack.uploadUserId = '';//Пока оставим пустым
+  newTrack.likeVSdislike = '';//Пока оставим пустым
+  newTrack.duration = '';//Пока оставим пустым
+  newTrack.size = '';//Пока оставим пустым
+  //newTrack.Pl_UserId = '';//Пока оставим пустым
+  newTrack.listenCount = '';//Пока оставим пустым
+  newTrack.fonogrammType[data.type] = data.quality;
+  newTrack.vocal = data.vocal;
+  newTrack.songText = data.songText;
+  newTrack.youTubeLink = data.youTubeLink;
+  newTrack.save(function(err, result) {
     if(err) return callback(err);
-    //result = result.map(function (contact) {
-    var cont =  result.toObject();
-    //});
-    return callback(null, cont)
-  })
-};*/
+    var track =  result.toObject();
+    return callback(null, track)
+  });
+
+};
+
 
 schema.statics.fetch = function(data, callback) {
   var Track = this;

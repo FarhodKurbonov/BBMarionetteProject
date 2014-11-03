@@ -2,8 +2,9 @@ define([
   'app',
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
-  'apps/tracks/list/listView'
-], function (App, ViewsCommon, Controllers, View) {
+  'apps/tracks/list/listView',
+  'tpl!apps/tracks/common/dialogForm/uploadform.tpl'
+], function (App, ViewsCommon, Controllers, View, dialogTpl) {
 
   App.module('TracksApp.List', function(List, App, Backbone, Marionette, $, _) {
     /**
@@ -24,126 +25,142 @@ define([
           var panel  =  new View.Panel();
           var self   = List.Controller;
 
-          $.when(fetchArtist, fetchLetters, fetchTracks)
-            .done(function(artist, letters, tracks){
+          $.when(fetchArtist, fetchLetters, fetchTracks).done(function(artist, letters, tracks) {
 
+            var lettersListView = new ViewsCommon.RuEnView({
+              collection: letters,
+              mainView  : View.Letters
+            });
 
-              var lettersListView = new ViewsCommon.RuEnView({
-                collection: letters,
-                mainView  : View.Letters
-              });
-              var contentHeader = new ViewsCommon.ContentHeader({
-                allOrSingleArtist: 'SingleArtist',
-                single: true,
-                avatar: artist
-              });
+            var contentHeader = new ViewsCommon.ContentHeader({
+              allOrSingleArtist: 'SingleArtist',
+              single: true,
+              avatar: artist
+            });
 
-              var contentMain = new ViewsCommon.ContentMain({
-                collection: tracks,
-                mainView  : View.Outer,
-                pager: false,
-                propagatedEvents: [
-                  'childview:artist:edit',
-                  'childview:artist:delete'
+            var contentMain = new ViewsCommon.ContentMain({
+              collection: tracks,
+              mainView  : View.Outer,
+              pager: false,
+              propagatedEvents: [
+                'childview:track:edit',
+                'childview:track:delete'
 
-                ]
-              });
+              ]
+            });
 
-                  /*self.listenTo(contentMain, 'childview:artist:delete', function (childView, model) {
-                  model.model.destroy();//тоже самое что models.collection.remove(models)
-                 });*/
-                  self.listenTo(Layout, 'show', function() {
-                    Layout.leftBarRegion.show(lettersListView);
-                    Layout.contentHeaderRegion.show(contentHeader);
-                    Layout.panelRegion.show(panel);
-                    Layout.tracksRegion.show(contentMain);
-                  });
+            self.listenTo(contentMain, 'childview:track:delete', function (childView, model) {
+              alert('delete clicked');
+            //model.model.destroy();//тоже самое что models.collection.remove(models)
+            });
 
-                  self.listenTo(panel, 'track:new', function () {
-                  require(['apps/tracks/new/newView'], function (New) {
-                      var newTrack = App.request('track:entity:new'); //Creating empty models
+            self.listenTo(Layout, 'show', function() {
+              Layout.leftBarRegion.show(lettersListView);
+              Layout.contentHeaderRegion.show(contentHeader);
+              Layout.panelRegion.show(panel);
+              Layout.tracksRegion.show(contentMain);
+            });
 
-                      var view = new New.Artist({
-                        model: newArtist
-                      });
+            self.listenTo(panel, 'track:new', function () {
+            require(['apps/tracks/new/newView'], function (New) {
+                var newTrack = App.request('track:entity:new'); //Creating empty models
 
-                      self.listenTo(view, 'form:submit', function (data) {
-                        var artistSaved = newArtist.save(data);
-                        if (artistSaved) {
-                          $.when(artistSaved)
-                            .done(function () {
-                              artists.add(newArtist);
-                              view.trigger('dialog:close');
-                            })
-                            .fail(function (response) {
-                              var keys = ['name'];
-                              if (response.status === 422) {
-                                console.log('Произошла ошибка: ', response);
-                                view.triggerMethod('form:data:invalid', response.errors);
-                              }
-                            });
-                        } else {
-                          view.triggerMethod('form:data:invalid', newArtist.validationError)
-                        }
+                var view = new New.Track({
+                  template: dialogTpl,//Передали шаблон
+                  model: newTrack
+                });
+                /**
+                 * Выводим диалоговое окно для загрузки файла, в котором анимированно загружается файл.
+                 * После загрузки файла генерится форма нового трека.
+                 */
+                require(['apps/tracks/new/uploader'], function(startUploadFile) {
+                  startUploadFile();//Запускаем скрипт для загрузки файла
+                  self.listenTo(view, 'form:submit', function (data) {
+                    data.artistId = options.id;
+                    var trackSaved = newTrack.save(data);//Сохраняем данные
+                    if (trackSaved) {
+                     $.when(trackSaved).done(function () {
+                       /**
+                        * Так как коллекция tracks у нас вложенная а также сортированная
+                        * по алфавиту мы находим модель у которой поле letter
+                        * соответствует первой букве названия песни
+                        * Далее, в найденной модели есть свойтво list
+                        * в ней хранится коллекция туда мы и нашу новую песню сохраняем
+                        */
+                       var desiredModel = tracks.find(function(model){
+                         return model.get('letter') === newTrack.get('name').charAt(0).toLowerCase();
+                       });
+                       desiredModel.get('list').add(newTrack);// Добавляем новый трек
+                       view.trigger('dialog:close');
+                    }).fail(function (response) {
+                      var keys = ['name'];
+                      if (response.status === 422) {
+                        console.log('Произошла ошибка: ', response);
+                        view.triggerMethod('form:data:invalid', response.errors);
+                      }
+                   });
+                   } else {
+                   view.triggerMethod('form:data:invalid', newTrack.validationError)
+                   }
 
-                      });
-                      App.dialogRegion.show(view);
-                    }
-                  )
+                   });
                 });
 
-/*                  self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
-                    require( ['apps/artists/edit/editView'], function (Edit) {
-                      var view = new Edit.Artist({
-                        model: model
-                      });
+                App.dialogRegion.show(view);
+              }
+            )
+          });
 
-                      view.on('form:submit', function (data) {
-                        model.set(data, {silent: true});
-                        var updateModel = model.save(data,{wait: true});
+            self.listenTo(contentMain, 'childview:track:edit', function (childView, model) {
 
-                        if (updateModel) {
-                          view.onBeforeDestroy = function () {
-                            model.set({changedOnServer: false});
-                          };
-                          $.when(updateModel)
-                            .done(function () {
-                              childView.render();
-                              delete view.onDestroy;
-                              view.trigger("dialog:close");
-                              childView.flash('success');
-                            })
-                            .fail(function (response) {
-                              view.onDestroy = function () {
-                                model.set(model.previousAttributes());
-                              };
-                              if (response.status === 422) {
-                                var keys = ['name', 'avatar'];
-                                model.refresh(response.entity, keys);
-                                view.render();
-                                view.triggerMethod('form:data:invalid', response.errors);
-                                model.set(response.entity, {silent: true});
+              require( ['apps/artists/edit/editView'], function (Edit) {
+                var view = new Edit.Artist({
+                  model: model
+                });
 
-                              }
-                            });
-                        } else {
-                          view.onDestroy = function () {
-                            model.set(model.previousAttributes());
-                          };
-                          view.triggerMethod('form:data:invalid', model.validationError);
+                view.on('form:submit', function (data) {
+                  model.set(data, {silent: true});
+                  var updateModel = model.save(data,{wait: true});
+
+                  if (updateModel) {
+                    view.onBeforeDestroy = function () {
+                      model.set({changedOnServer: false});
+                    };
+                    $.when(updateModel)
+                      .done(function () {
+                        childView.render();
+                        delete view.onDestroy;
+                        view.trigger("dialog:close");
+                        childView.flash('success');
+                      })
+                      .fail(function (response) {
+                        view.onDestroy = function () {
+                          model.set(model.previousAttributes());
+                        };
+                        if (response.status === 422) {
+                          var keys = ['name', 'avatar'];
+                          model.refresh(response.entity, keys);
+                          view.render();
+                          view.triggerMethod('form:data:invalid', response.errors);
+                          model.set(response.entity, {silent: true});
+
                         }
                       });
+                  } else {
+                    view.onDestroy = function () {
+                      model.set(model.previousAttributes());
+                    };
+                    view.triggerMethod('form:data:invalid', model.validationError);
+                  }
+                });
 
-                      App.dialogRegion.show(view)
-                    })
-                  });*/
+                App.dialogRegion.show(view)
+              })
+            });
 
-                  App.mainRegion.show(Layout);
+            App.mainRegion.show(Layout);
 
-
-
-            })
-            .fail(function() {
+            }).fail(function() {
               alert('Произошла непредвиденная ошибка. Попытайтесь перезагрузить сраницу');
             });
         })

@@ -98,14 +98,14 @@ define(['app',
       },
       triggers: {
         "click td a.js-show": {
-          event: "contact:show",
+          event: "track:show",
           preventDefault: true,
           stopPropagation: true
         }
       },
        behaviors: {
          Confirmable: {
-           event: 'artist:delete',
+           event: 'track:delete',
            message: function (view) {
             return 'Удалить ' + view.model.get('name') + '?';
            }
@@ -122,7 +122,7 @@ define(['app',
       editClicked: function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.trigger('artist:edit', this.model);
+        this.trigger('track:edit', this.model);
       }
     });
 
@@ -132,23 +132,34 @@ define(['app',
       tagName: 'li',
       childView: List.Track,
       childViewContainer: 'tbody',
-
       initialize: function () {
         this.collection = this.model.get('list');
         this.listenTo(this.collection, 'reset', function () {
           this.appendHtml = function (collectionView, itemView, index) {
             collectionView.$el.append(itemView.el)
           }
-        })
-      },
+        });
+        /**
+         * Ловим событие itemView и "поднимаем его" до layoutView
+         * он же в свою очередь передает это событе ListController'у который
+         * ловит событие 'childview:track:edit'
+         * Для compositeView это событие ребенка поэтому он слушает событие префиксоа childview
+         */
+        this.on('childview:track:edit', function(){
+          this.trigger('track:edit');//это событие ловит ContentMain
+        });
+        this.on('childview:track:delete', function(){
+          this.trigger('track:delete');//это событие ловит ContentMain
+        });
 
+      },
       onCompositeCollectionRendered: function () {
         this.appendHtml = function (collectionView, itemView, index) {
           collectionView.$el.prepend(itemView.el);
         }
       }
-
     });
+
     List.Outer = CollectionView.extend({
       className: 'media-list',
       tagName: 'ul',

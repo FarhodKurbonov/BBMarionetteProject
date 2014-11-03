@@ -30,7 +30,6 @@ define([
         name         : '',
         artistId     : '',
         url          : '',
-        createdAt    : '',
         uploadUserId : '',
         likeVSdislike: '',
         duration     : '',
@@ -39,9 +38,13 @@ define([
         downloadCount: '',
         Pl_UserId    : '',
         listenCount  : 0,
-        fonogrammType: '',
-        vocal        : '',
-        changedOnServer: false
+        type         : '',
+        quality      : '',
+        vocal        : null,
+        songText     : '',
+        youTubeLink  : '',
+        changedOnServer: false,
+        trackName    : ''
       }
     });
 
@@ -52,6 +55,7 @@ define([
           minLength: 3,
           msg: 'Слишком короткий(мин. 3 символа)'
         }
+
 
       }
     });
@@ -124,7 +128,7 @@ define([
       return API.getTrackEntity(id, options)
     });
 
-    App.reqres.setHandler('tracks:entity:new', function () {
+    App.reqres.setHandler('track:entity:new', function () {
       return new Entities.Track();
     })
   });

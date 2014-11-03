@@ -1,0 +1,27 @@
+@import "compass/css3";
+  //== Colors
+$lavender   : #E8E8E8;
+$whitesmoke : #F8F8F8;
+$gainsboro  : #D8D8D8;
+
+#ProgressContainer {
+  width: 396px;
+  height: 36px;
+  background: $whitesmoke;
+  margin-top: 14px;
+  border: 1px solid $lavender;
+  border-top: 1px solid $gainsboro;
+  @include border-radius(4px, 4px);
+  padding: 2px;
+}
+
+#ProgressBar {
+  height: 100%;
+  width: 0%;
+  @include border-radius(4px, 4px);
+  @include background(linear-gradient(to bottom right, #2ddb12, #138d28, #096f1a));
+}
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}

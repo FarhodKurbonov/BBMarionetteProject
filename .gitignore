@@ -72,7 +72,8 @@ build/Release
 node_modules
 #Sass cache files
 .sass-cache
-
+#tempFiles
+tempFiles
 # Users Environment Variables
 .lock-wscript
 

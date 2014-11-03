@@ -3,9 +3,9 @@
 
 <td align="right" nowrap class="btn-group">
   <a class="btn btn-default btn-sm js-edit" href="#artists/<%=id%>/edit">
-    <i class="icon-pencil"></i> Редактировать
+    <i class="glyphicon glyphicon-edit"></i> Редактировать
   </a>
   <button class="btn btn-default btn-sm js-behavior-confirmable">
-    <i class="icon-remove"></i> Удалить
+    <i class="glyphicon glyphicon-remove"></i> Удалить
   </button>
 </td>

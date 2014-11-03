@@ -308,8 +308,8 @@ th {
     border: 1px solid #ddd !important; } }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?1413652339);
-  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?&1413652339#iefix) format("embedded-opentype"), url(/fonts/bootstrap/glyphicons-halflings-regular.woff?1413652339) format("woff"), url(/fonts/bootstrap/glyphicons-halflings-regular.ttf?1413652339) format("truetype"), url(/fonts/bootstrap/glyphicons-halflings-regular.svg?1413652339#glyphicons_halflingsregular) format("svg"); }
+  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?1414916349);
+  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?&1414916349#iefix) format("embedded-opentype"), url(/fonts/bootstrap/glyphicons-halflings-regular.woff?1414914821) format("woff"), url(/fonts/bootstrap/glyphicons-halflings-regular.ttf?1414914820) format("truetype"), url(/fonts/bootstrap/glyphicons-halflings-regular.svg?1414914822#glyphicons_halflingsregular) format("svg"); }
 /* line 25, ../../../../../../../var/lib/gems/1.9.1/gems/bootstrap-sass-3.2.0.2/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
   position: relative;
@@ -6903,3 +6903,33 @@ h3 small {
   #footer p {
     margin: 20px 0;
     text-align: center; }
+
+/* line 7, components/apps/_upload.scss */
+#ProgressContainer {
+  width: 396px;
+  height: 36px;
+  background: #F8F8F8;
+  margin-top: 14px;
+  border: 1px solid #E8E8E8;
+  border-top: 1px solid #D8D8D8;
+  -moz-border-radius: 4px / 4px;
+  -webkit-border-radius: 4px 4px;
+  border-radius: 4px / 4px;
+  padding: 2px; }
+
+/* line 18, components/apps/_upload.scss */
+#ProgressBar {
+  height: 100%;
+  width: 0%;
+  -moz-border-radius: 4px / 4px;
+  -webkit-border-radius: 4px 4px;
+  border-radius: 4px / 4px;
+  background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuMCIgeTE9IjAuMCIgeDI9IjEuMCIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkZGIxMiIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjMTM4ZDI4Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDk2ZjFhIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
+  background: -webkit-gradient(linear, 0% 0%, 100% 100%, color-stop(0%, #2ddb12), color-stop(50%, #138d28), color-stop(100%, #096f1a));
+  background: -moz-linear-gradient(top, #2ddb12, #138d28, #096f1a);
+  background: -webkit-linear-gradient(top, #2ddb12, #138d28, #096f1a);
+  background: linear-gradient(to bottom right, #2ddb12, #138d28, #096f1a); }
+.stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+}

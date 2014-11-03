@@ -6,13 +6,17 @@ define([
 ], function(App, ItemView, formTpl) {
   App.module('Views.Common.Dialog', function (Dialog, App, Backbone, Marionette, $, _) {
     Dialog.Form = ItemView.extend({
-      template: formTpl,
-
       events: {
         'click button.js-submit': 'submitClicked'
+      
+      },
+      initialize: function(options) {
+       this.template = options.template
       }
-    });
 
+
+    })
+   
     _.extend(Dialog.Form.prototype, {
 
       submitClicked: function (e) {

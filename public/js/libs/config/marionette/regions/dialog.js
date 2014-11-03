@@ -6,9 +6,18 @@ define(['marionette', 'jquery-ui'], function(Marionette) {
       var self = this;
       var configureDialog = function () {
         self.$el.dialog({
+          create: function(event, ui){
+            $('body').addClass('stop-scrolling')
+          },
+          beforeClose: function (event, ui) {
+            $('body').removeClass('stop-scrolling')
+          },
           modal: true,
           title: view.title,
           width: 'auto',
+          closeOnEscape: true,
+          hide: { effect: "blind",
+            duration: 200 },
           close: function (e, ui) {
             self.closeDialog();
           }

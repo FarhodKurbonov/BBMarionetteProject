@@ -1,4 +1,4 @@
-<button class="btn btn-default btn-sm js-new">Добавить</button>
+<button class="btn btn-default btn-sm js-new"><i class="glyphicon glyphicon-plus"></i> Добавить</button>
 <form id="filter-form" class="form-inline pull-right" role="form">
 
   <div class="input-group">
@@ -8,6 +8,4 @@
     </span>
  </div>
 
-
-</div>
 </form>
