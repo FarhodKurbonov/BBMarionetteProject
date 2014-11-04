@@ -1,16 +1,26 @@
-define(['marionette', 'tpl!apps/tracks/common/dialogForm/addForm.tpl'], function(Marionette, extendFormTpl){
+define([
+        'marionette',
+        'tpl!apps/tracks/common/dialogForm/addForm.tpl',
+        'tpl!apps/tracks/common/dialogForm/uploadForm.tpl'
 
+], function(Marionette, extendFormTpl, uploadFormTpl){
 
-
-      /**
+  /**
        * Это соответствующие HTML5 объекты которые мы собираемся использовать
        * если их нет значит браузер не поддерживате загрузгу файлов
        * выводим сообщение об этом пользователю
        */
   function startUploadFile() {
+
     if (window.File && window.FileReader) {
-      document.getElementById('UploadButton').addEventListener('click', StartUpload);
-      document.getElementById('FileBox').addEventListener('change', FileChosen);
+      var   uploadButton =  $('#UploadButton');
+      var   fileBox     =   $('#FileBox');
+      if(uploadButton.data('UploadButton')=='listen' && fileBox.data('fileBox')=='listen'){
+        return;
+      } else{
+        uploadButton.on('click', StartUpload).data('UploadButton', 'listen');
+        fileBox.on('change', FileChosen).data('fileBox', 'listen');
+      }
     } else {
       document.getElementById('UploadArea')
         .innerHTML = "Ваш браузер не поддерживат загрузку файлов. Пожалуйста обновите ваш браузер";
@@ -64,10 +74,22 @@ define(['marionette', 'tpl!apps/tracks/common/dialogForm/addForm.tpl'], function
       document.getElementById('MB').innerHTML = MBDone;
     }
 
-    socket.on('Done', function (trackName){
+    socket.on('Done', function (track, fileSize) {
+      if(fileSize ==  SelectedFile.size && Name == track){
+        var html = Marionette.Renderer.render(extendFormTpl, track || {});
+        document.getElementById('UploadArea').innerHTML = html;
+      } else {
+        html = Marionette.Renderer.render(uploadFormTpl,{});
+        document.getElementById('UploadArea').innerHTML = html;
+        document.getElementById('UploadArea').insertAdjacentHTML('afterBegin', "<div class='alert alert-success' role='alert'>Файл: " + track.trackName + " успешно загружен</div>" );
+        document.getElementById('artistName').value = track.trackName;
 
-      var html = Marionette.Renderer.render(extendFormTpl, {data: trackName});
-      document.getElementById('UploadArea').innerHTML = html;
+      }
+
+      $('#UploadButton').off();
+      $('#FileBox').off();
+
+
 
     });
 

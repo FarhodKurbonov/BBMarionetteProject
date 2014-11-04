@@ -145,11 +145,11 @@ define(['app',
          * ловит событие 'childview:track:edit'
          * Для compositeView это событие ребенка поэтому он слушает событие префиксоа childview
          */
-        this.on('childview:track:edit', function(){
-          this.trigger('track:edit');//это событие ловит ContentMain
+        this.on('childview:track:edit', function(view, model){
+          this.trigger('track:edit',{itemView: view, itemModel: model});//это событие ловит ContentMain
         });
-        this.on('childview:track:delete', function(){
-          this.trigger('track:delete');//это событие ловит ContentMain
+        this.on('childview:track:delete', function(view, model) {
+          this.trigger('track:delete', {itemView: view, itemModel: model});//это событие ловит ContentMain
         });
 
       },

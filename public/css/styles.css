@@ -308,8 +308,8 @@ th {
     border: 1px solid #ddd !important; } }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?1414916349);
-  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?&1414916349#iefix) format("embedded-opentype"), url(/fonts/bootstrap/glyphicons-halflings-regular.woff?1414914821) format("woff"), url(/fonts/bootstrap/glyphicons-halflings-regular.ttf?1414914820) format("truetype"), url(/fonts/bootstrap/glyphicons-halflings-regular.svg?1414914822#glyphicons_halflingsregular) format("svg"); }
+  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot);
+  src: url(/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix) format("embedded-opentype"), url(/fonts/bootstrap/glyphicons-halflings-regular.woff) format("woff"), url(/fonts/bootstrap/glyphicons-halflings-regular.ttf) format("truetype"), url(/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format("svg"); }
 /* line 25, ../../../../../../../var/lib/gems/1.9.1/gems/bootstrap-sass-3.2.0.2/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
   position: relative;
@@ -6929,7 +6929,17 @@ h3 small {
   background: -moz-linear-gradient(top, #2ddb12, #138d28, #096f1a);
   background: -webkit-linear-gradient(top, #2ddb12, #138d28, #096f1a);
   background: linear-gradient(to bottom right, #2ddb12, #138d28, #096f1a); }
+
+/* line 24, components/apps/_upload.scss */
 .stop-scrolling {
-    height: 100%;
-    overflow: hidden;
-}
+  height: 100%;
+  overflow: hidden; }
+
+/* line 28, components/apps/_upload.scss */
+.update-file:hover {
+  cursor: pointer;
+  text-shadow: rgba(128, 128, 128, 0.2) 1px 1px 0, rgba(128, 128, 128, 0.2) 2px 2px 0, rgba(128, 128, 128, 0.2) 3px 3px 0; }
+
+/* line 32, components/apps/_upload.scss */
+.upload-wrapper {
+  display: none; }

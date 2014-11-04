@@ -67,10 +67,8 @@ module.exports = function(server) {
 
     });
     socket.on('artists:update', function(artist, callback) {
-      //Обновить контакт
-      //Отправить обратно the result
-      Artist.update(artist, function(err, artist){
 
+      Artist.update(artist, function(err, artist){
         if(err) {
           var error = {};
           if(err.name == "MongoError") {
@@ -81,7 +79,6 @@ module.exports = function(server) {
               entity: artist
             });
           }
-          //debugger;
           if(err.errors.name) error.name = err.errors.name.message;
           if(err.errors.avatar) error.avatar = err.errors.avatar.message;
 
@@ -146,8 +143,33 @@ module.exports = function(server) {
         }
       });
     });
+    socket.on('tracks:update', function(track, callback) {
 
+      Track.update(track, function(err, track){
+        if(err) {
+          var error = {};
+          if(err.name == "MongoError") {
+            error.name = err.message;
+            return callback({
+              status: 422,
+              errors: error,
+              entity: artist
+            });
+          }
+          if(err.errors.name) error.name = err.errors.name.message;
+          if(err.errors.avatar) error.avatar = err.errors.avatar.message;
 
+          return callback({
+            status: 422,
+            errors: error,
+            entity: artist
+          });
+        } else {
+          return callback(null, artist);
+        }
+      });
+
+    });
 
 
 
@@ -193,7 +215,7 @@ module.exports = function(server) {
             if(err) log.error(err)
             fs.unlink( 'tempFiles/' + Name, function (err) { //This Deletes The Temporary File
               if(err) log.error(err);
-              socket.emit('Done', {'trackName': Name});
+              socket.emit('Done', {'trackName': Name, 'FileSize': Files[Name]['FileSize']});
             });
           });
         })

@@ -1,6 +1,6 @@
 define(['app', 'libs/views/regions/dialogView'], function(App, ViewsCommonDialog) {
-  App.module('ArtistsApp.Edit', function (Edit, App, Backbone, Marionette, $, _) {
-    Edit.Artist = ViewsCommonDialog.Form.extend({
+  App.module('TracksApp.Edit', function (Edit, App, Backbone, Marionette, $, _) {
+    Edit.Track = ViewsCommonDialog.Form.extend({
       onBeforeRender: function () {
         this.title = 'Редактирование ' + this.model.get('name');
       },
@@ -9,9 +9,24 @@ define(['app', 'libs/views/regions/dialogView'], function(App, ViewsCommonDialog
           var $title = $('<h1>', {text: this.title});
           this.$el.prepend($title);
         }
-        this.$('.js-submit').text('Обновить контакт');
+        this.$('.js-submit').text('Обновить');
+
+        this.$('.update-file').on('click', function(event) {
+          if($(this).hasClass('clicked')) {
+            $('.upload-wrapper').fadeOut();
+            $(this).removeClass('clicked')
+          } else {
+            $('.upload-wrapper').fadeIn();
+            require(['apps/tracks/new/uploader'], function(startUploadFile){
+              startUploadFile();
+            });
+            $(this).addClass('clicked')
+          }
+
+
+        })
       }
     })
   });
-  return App.ArtistsApp.Edit;
+  return App.TracksApp.Edit;
 });

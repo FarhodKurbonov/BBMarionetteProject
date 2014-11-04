@@ -2,9 +2,8 @@ define([
   'app',
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
-  'apps/tracks/list/listView',
-  'tpl!apps/tracks/common/dialogForm/uploadform.tpl'
-], function (App, ViewsCommon, Controllers, View, dialogTpl) {
+  'apps/tracks/list/listView'
+], function (App, ViewsCommon, Controllers, View) {
 
   App.module('TracksApp.List', function(List, App, Backbone, Marionette, $, _) {
     /**
@@ -62,11 +61,13 @@ define([
             });
 
             self.listenTo(panel, 'track:new', function () {
-            require(['apps/tracks/new/newView'], function (New) {
+            require(['apps/tracks/new/newView',
+                     'tpl!apps/tracks/common/dialogForm/uploadForm.tpl'
+            ],function (New, uploadFormTpl) {
                 var newTrack = App.request('track:entity:new'); //Creating empty models
 
                 var view = new New.Track({
-                  template: dialogTpl,//Передали шаблон
+                  template: uploadFormTpl,//Передали шаблон
                   model: newTrack
                 });
                 /**
@@ -111,16 +112,21 @@ define([
             )
           });
 
-            self.listenTo(contentMain, 'childview:track:edit', function (childView, model) {
+            self.listenTo(contentMain, 'childview:track:edit', function (childView, options) {
 
-              require( ['apps/artists/edit/editView'], function (Edit) {
-                var view = new Edit.Artist({
+              require(['apps/tracks/edit/editView',
+                       'tpl!apps/tracks/common/dialogForm/addForm.tpl'
+              ], function (Edit, extendFormTpl) {
+                var model = options.itemModel;
+                    childView = options.itemView;
+                var view = new Edit.Track({
+                  template: extendFormTpl,
                   model: model
                 });
 
                 view.on('form:submit', function (data) {
                   model.set(data, {silent: true});
-                  var updateModel = model.save(data,{wait: true});
+                  var updateModel = options.itemModel.save(data,{wait: true});
 
                   if (updateModel) {
                     view.onBeforeDestroy = function () {

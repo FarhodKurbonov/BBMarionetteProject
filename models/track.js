@@ -10,7 +10,7 @@ var mongoose= require('libs/mongoose'),
  * @param {String} val Value of name
  * @returns {boolean}
  */
-function validatorName(val) {
+function validateTrackName(val) {
   return (val != '' && val.length > 2)
 }
 /**
@@ -22,14 +22,20 @@ function isoDate(val) {
   if (!val) return val;
   return (val.getMonth() + 1) + "/" + val.getDate() + "/" + val.getFullYear();
 }
-
-var msgName = [validatorName, 'не может быть пустым'];
+function validateTrackUrl(val){
+  var extend = val.split('.');
+  extend = extend[(extend.length-1)];
+  return (val != '' && val.length > 2)
+}
+var msgTrackName = [validateTrackName, 'не может быть пустым'];
+var msgTrackUrl = [];
 var types = ['аранжировка', 'задавка', 'нарезка', 'оригинал'];
 var schema  = new Schema({
   name: {
     type: String,
     required: true,
-    validate: msgName
+    trim: true,
+    validate: msgTrackName
   },
   artistId: {
     type: Schema.Types.ObjectId,
@@ -128,7 +134,7 @@ schema.statics.create = function(data, callback) {
   var newTrack = new Track();
   newTrack.name = data.name || "";//Взяли имя
   newTrack.artistId = data.artistId;
-  newTrack.url = '/mp3/' + data.trackName;
+  newTrack.url.urlM = '/mp3/' + data.trackName;
   newTrack.bitRate = '';//Пока оставим пустым
   //newTrack.uploadUserId = '';//Пока оставим пустым
   newTrack.likeVSdislike = '';//Пока оставим пустым
@@ -148,6 +154,28 @@ schema.statics.create = function(data, callback) {
 
 };
 
+schema.statics.update = function(data, callback) {
+  var Track = this;
+  Track.findById(data.id, function(err, result) {
+    //Сохраняем значение до изменения
+    //если произойдеть ошибка то вернуть последнее сохраненное
+    //значение из базы
+
+    //Сохраняем
+
+    var oldEntity = result.toObject();
+
+    //Обновляем
+    result.name= data.name;
+    result.avatar = data.avatar;
+    result.save(function(err, artist) {
+      if(err) return callback(err, oldEntity);
+      var art =  artist.toObject();
+      return callback(null, art);
+    });
+
+  })
+};
 
 schema.statics.fetch = function(data, callback) {
   var Track = this;

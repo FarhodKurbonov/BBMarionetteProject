@@ -25,3 +25,10 @@ $gainsboro  : #D8D8D8;
   height: 100%;
   overflow: hidden;
 }
+.update-file:hover {
+  cursor: pointer;
+  @include text-shadow(rgba(gray, 0.2) 1px 1px 0, rgba(gray, 0.2) 2px 2px 0, rgba(gray, 0.2) 3px 3px 0);
+}
+.upload-wrapper {
+  display: none;
+}

@@ -20,7 +20,9 @@
           </div>
           <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-              <button type='button' id='UploadButton' class='btn btn-success'>Загрузить</button>
+
+              <button type='button' id='UploadButton' class='btn btn-success'>
+                <i class="glyphicon glyphicon-cloud-upload"></i> Загрузить</button>
             </div>
           </div>
 

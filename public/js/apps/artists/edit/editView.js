@@ -9,7 +9,7 @@ define(['app', 'libs/views/regions/dialogView'], function(App, ViewsCommonDialog
           var $title = $('<h1>', {text: this.title});
           this.$el.prepend($title);
         }
-        this.$('.js-submit').text('Обновить контакт');
+        this.$('.js-submit').text('Обновить');
       }
     })
   });

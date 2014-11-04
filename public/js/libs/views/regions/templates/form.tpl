@@ -18,5 +18,5 @@
           <input  type="text" class="form-control" id="artist-avatar" name="avatar" value="<%= avatar %>"/>
         </div>
     </div>
-    <button class="btn js-submit">Сохранить</button>
+    <button class="btn js-submit">>Сохранить</button>
 </form>

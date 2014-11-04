@@ -125,7 +125,7 @@ define([
                   self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
                     require( ['apps/artists/edit/editView'], function (Edit) {
                       var view = new Edit.Artist({
-                      template: dialogTpl,
+                        template: dialogTpl,
                         model: model
                       });
 
