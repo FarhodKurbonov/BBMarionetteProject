@@ -6918,7 +6918,7 @@ h3 small {
   padding: 2px; }
 
 /* line 18, components/apps/_upload.scss */
-#ProgressBar {
+#progressBar {
   height: 100%;
   width: 0%;
   -moz-border-radius: 4px / 4px;

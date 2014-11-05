@@ -1,97 +1,101 @@
 define([
         'marionette',
-        'tpl!apps/tracks/common/dialogForm/addForm.tpl',
-        'tpl!apps/tracks/common/dialogForm/uploadForm.tpl'
-
-], function(Marionette, extendFormTpl, uploadFormTpl){
-
-  /**
-       * Это соответствующие HTML5 объекты которые мы собираемся использовать
-       * если их нет значит браузер не поддерживате загрузгу файлов
-       * выводим сообщение об этом пользователю
-       */
-  function startUploadFile() {
-
-    if (window.File && window.FileReader) {
-      var   uploadButton =  $('#UploadButton');
-      var   fileBox     =   $('#FileBox');
-      if(uploadButton.data('UploadButton')=='listen' && fileBox.data('fileBox')=='listen'){
-        return;
-      } else{
-        uploadButton.on('click', StartUpload).data('UploadButton', 'listen');
-        fileBox.on('change', FileChosen).data('fileBox', 'listen');
-      }
-    } else {
-      document.getElementById('UploadArea')
-        .innerHTML = "Ваш браузер не поддерживат загрузку файлов. Пожалуйста обновите ваш браузер";
-
-    }
-  }
+        'ss'
+], function(Marionette, ss){
 
     /**
-     * Как только файл выбран выводим имя файла в input
+     * Это соответствующие HTML5 объекты которые мы собираемся использовать
+     * если их нет значит браузер не поддерживате загрузгу файлов
+     * выводим сообщение об этом пользователю
      */
-    var SelectedFile;
-    function FileChosen(event) {
-      SelectedFile = event.target.files[0];
-      document.getElementById('NameBox').value = SelectedFile.name;
+    function startUploadFile(template) {
 
-    }
+      if (window.File && window.FileReader) {
+        var SelectedFile,
+          nameBox    = $('#NameBox'),
+          fileBox    = $('#FileBox'),
+          uploadArea = $('#UploadArea'),
+          uploadButton =  $('#UploadButton'),
+          downloaded = 0,
+          blobStream,
+          progressBar,
+          percent,
+          MB;
 
-    var FReader;
-    var Name;
-    function StartUpload(event, artName) {
-      if(document.getElementById('FileBox').value != "") {
-        FReader = new FileReader();
-        Name = document.getElementById('NameBox').value;
-        var Content = "<span id='NameArea'>Загрузка файла: " + SelectedFile.name + "</span>";
-        Content += '<div id="ProgressContainer"><div id="ProgressBar"></div></div><span id="percent">0%</span>';
-        Content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
-        document.getElementById('UploadArea').innerHTML = Content;
-        FReader.onload = function(evnt){
-          window.socket.emit('Upload', { 'Name' : Name, Data : evnt.target.result });
-        };
-          window.socket.emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size , 'ArtName': artName});
+        if(uploadButton.data('uploadButton')=='listen' && fileBox.data('fileBox')=='listen'){
+          return ;
+        } else{
+          uploadButton.on('click', StartUpload)
+            .data('uploadButton', 'listen');
 
+          fileBox.on('change', fileChosen)
+            .data('fileBox', 'listen');
+        }
       } else {
-        alert("Пожалуйста добавте файл!");
-
-      }
-    }
-
-    window.socket.on('MoreData', function (data){
-      UpdateBar(data['Percent']);
-      var Place = data['Place'] * 524288; //The Next Blocks Starting Position
-       //The Variable that will hold the new Block of Data
-      var NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size - Place)));
-
-      FReader.readAsBinaryString(NewFile);
-    });
-    function UpdateBar(percent) {
-      document.getElementById('ProgressBar').style.width = percent + '%';
-      document.getElementById('percent').innerHTML = (Math.round(percent*100)/100) + '%';
-      var MBDone = Math.round(((percent/100.0) * SelectedFile.size) / 1048576);
-      document.getElementById('MB').innerHTML = MBDone;
-    }
-
-    socket.on('Done', function (track, fileSize) {
-      if(fileSize ==  SelectedFile.size && Name == track){
-        var html = Marionette.Renderer.render(extendFormTpl, track || {});
-        document.getElementById('UploadArea').innerHTML = html;
-      } else {
-        html = Marionette.Renderer.render(uploadFormTpl,{});
-        document.getElementById('UploadArea').innerHTML = html;
-        document.getElementById('UploadArea').insertAdjacentHTML('afterBegin', "<div class='alert alert-success' role='alert'>Файл: " + track.trackName + " успешно загружен</div>" );
-        document.getElementById('artistName').value = track.trackName;
-
+        uploadArea.html( "Ваш браузер не поддерживат загрузку файлов. Пожалуйста обновите ваш браузер");
       }
 
-      $('#UploadButton').off();
-      $('#FileBox').off();
+      function fileChosen(event) {
+        SelectedFile = event.target.files[0];
+        nameBox.val( SelectedFile.name);
+      }
 
+      function StartUpload(event) {
+        if( fileBox.val() != "" ) {
+          var fileName = nameBox.val();
+          var stream = ss.createStream();
+          blobStream = ss.createBlobReadStream(SelectedFile);
 
+          var content = "<span id='NameArea'>Загрузка файла: " + fileName + "</span>";
+          content += '<div id="ProgressContainer"><div id="progressBar"></div></div><span id="percent">0%</span>';
+          content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
+          uploadArea.html(content);
 
-    });
+          progressBar = $('#progressBar');
+          percent     = $('#percent');
+          MB          = $('#MB');
+
+          ss(socket).emit('Upload', stream, { 'Name' : fileName, size : SelectedFile.size });
+          blobStream.on('data', function (chunk) {
+            downloaded += chunk.length;
+            var percent = (downloaded / SelectedFile.size) * 100;
+            UpdateBar(percent);
+          });
+          blobStream.pipe(stream);
+        } else {
+          alert("Пожалуйста добавьте файл!");
+        }
+      }
+
+      //===============Generate html content=========
+      socket.on('done', function(data) {
+        switch (data.success) {
+          case true :
+            var renderContent = Marionette.Renderer.render(template, data || {});
+            uploadArea.html( renderContent );
+            $('#UploadButton').off();
+            $('#FileBox').off();
+            break;
+          case false:
+            uploadArea.html( "<div class='alert alert-error' role='alert'>Ошибка: Файл неподдерживаемого формата</div>" );
+            break;
+          case 'errorConversation':
+            uploadArea.html( "<div class='alert alert-error' role='alert'>Произошла ошибка при загрузке. Попытайтесь заргузить заново</div>" );
+            break;
+        }
+      });
+
+      //================Helper========================
+      function UpdateBar(percentage) {
+        progressBar.css('width', function() {
+          return percentage + '%'
+        });
+        percent.html( Math.round(percentage*100) / 100 + '%' );
+        MB.html( Math.round( ( (percentage/100)*SelectedFile.size)/1048576 ) );
+      }
+
+    }
+
 
   return startUploadFile;
 });

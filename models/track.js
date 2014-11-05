@@ -4,7 +4,9 @@ var mongoose= require('libs/mongoose'),
     async   = require('async'),
     util    = require('util'),
     http    = require('http'),
-    ObjectID = require('mongodb').ObjectID;
+    probe = require('node-ffprobe'),
+    ObjectID = require('mongodb').ObjectID,
+    DOWNLOAD = 'mp3/';
 /**
  * Validation name of track
  * @param {String} val Value of name
@@ -130,28 +132,28 @@ schema.methods.saveTrack = function(data){
 
 schema.statics.create = function(data, callback) {
   var Track = this;
-
-  var newTrack = new Track();
-  newTrack.name = data.name || "";//Взяли имя
-  newTrack.artistId = data.artistId;
-  newTrack.url.urlM = '/mp3/' + data.trackName;
-  newTrack.bitRate = '';//Пока оставим пустым
-  //newTrack.uploadUserId = '';//Пока оставим пустым
-  newTrack.likeVSdislike = '';//Пока оставим пустым
-  newTrack.duration = '';//Пока оставим пустым
-  newTrack.size = '';//Пока оставим пустым
-  //newTrack.Pl_UserId = '';//Пока оставим пустым
-  newTrack.listenCount = '';//Пока оставим пустым
-  newTrack.fonogrammType[data.type] = data.quality;
-  newTrack.vocal = data.vocal;
-  newTrack.songText = data.songText;
-  newTrack.youTubeLink = data.youTubeLink;
-  newTrack.save(function(err, result) {
-    if(err) return callback(err);
-    var track =  result.toObject();
-    return callback(null, track)
+  probe(DOWNLOAD+data.trackName, function(err, probeData) {
+    var newTrack = new Track();
+    newTrack.name = data.name || "";//Взяли имя
+    newTrack.artistId = data.artistId;
+    newTrack.url.urlM = probeData.file;
+    newTrack.bitRate = probeData.format.bit_rate;
+    //newTrack.uploadUserId = '';//Пока оставим пустым
+    newTrack.likeVSdislike = '';//Пока оставим пустым
+    newTrack.duration = probeData.format.duration;//Пока оставим пустым
+    newTrack.size = probeData.format.size/1048576;
+    //newTrack.Pl_UserId = '';//Пока оставим пустым
+    newTrack.listenCount = '';//Пока оставим пустым
+    newTrack.fonogrammType[data.type] = data.quality;
+    newTrack.vocal = data.vocal;
+    newTrack.songText = data.songText;
+    newTrack.youTubeLink = data.youTubeLink;
+    newTrack.save(function(err, result) {
+      if(err) return callback(err);
+      var track =  result.toObject();
+      return callback(null, track)
+    });
   });
-
 };
 
 schema.statics.update = function(data, callback) {

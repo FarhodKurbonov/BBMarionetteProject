@@ -28,7 +28,9 @@
     "socket.io": "1.1.0",
     "mongodb": "*",
     "async": "*",
-    "grunt-node-inspector": "*"
+    "grunt-node-inspector": "*",
+    "socket.io-stream": "*",
+    "node-ffprobe":"*"
 
 
   }

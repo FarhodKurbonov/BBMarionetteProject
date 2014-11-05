@@ -17,13 +17,18 @@ requirejs.config({
     'spin'      : 'vendor/spin',
     'spin.jquery':'vendor/spin.jquery',
     'picky'     : 'vendor/backbone.picky',
-    'affix'     : 'vendor/bootstrap/affix'
+    'affix'     : 'vendor/bootstrap/affix',
+    'ss'        : 'vendor/socket.io-stream'
 
   },
   shim   : {
     'socket.io' : {
       exports: 'io'
     },
+    'ss' : {
+      exports: 'ss'
+    },
+
     'underscore': {
       exports: '_'
     },

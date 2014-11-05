@@ -62,7 +62,7 @@ define([
 
             self.listenTo(panel, 'track:new', function () {
             require(['apps/tracks/new/newView',
-                     'tpl!apps/tracks/common/dialogForm/uploadForm.tpl'
+                     'tpl!apps/tracks/new/templates/uploadForm.tpl'
             ],function (New, uploadFormTpl) {
                 var newTrack = App.request('track:entity:new'); //Creating empty models
 
@@ -74,8 +74,11 @@ define([
                  * Выводим диалоговое окно для загрузки файла, в котором анимированно загружается файл.
                  * После загрузки файла генерится форма нового трека.
                  */
-                require(['apps/tracks/new/uploader'], function(startUploadFile) {
-                  startUploadFile();//Запускаем скрипт для загрузки файла
+                require(['' +
+                  'apps/tracks/new/uploader',
+                  'tpl!apps/tracks/new/templates/addNewTrackForm.tpl'
+                ], function(startUploadFile, addNewTrackForm) {
+                  startUploadFile(addNewTrackForm);//Запускаем скрипт для загрузки файла
                   self.listenTo(view, 'form:submit', function (data) {
                     data.artistId = options.id;
                     var trackSaved = newTrack.save(data);//Сохраняем данные

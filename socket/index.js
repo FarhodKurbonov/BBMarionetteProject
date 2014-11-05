@@ -9,7 +9,11 @@ var config    = require('config'),
   fs          = require('fs'),
   util        = require('util'),
   path        = require('path'),
-  Files       = {};
+  ss          = require('socket.io-stream'),
+  exec = require('child_process').exec,
+  probe = require('node-ffprobe'),
+  DOWNLOAD       = 'mp3/',
+  TEMP           = 'temp/';
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
@@ -174,68 +178,50 @@ module.exports = function(server) {
 
 
     //=======Upload Files========
-    socket.on('Start', function (data) { //data contains the variables that we passed through in the html file
-      var Name = data['Name'];
-      Files[Name] = {  //Create a new Entry in The Files Variable
-        FileSize : data['Size'],
-        Data     : "",
-        Downloaded : 0
-      };
-      var Place = 0;
-      try{
-        var Stat = fs.statSync('tempFiles/' +  Name);
-        if(Stat.isFile()) {
-          Files[Name]['Downloaded'] = Stat.size;
-          Place = Stat.size / 524288;
-        }
-      } catch(er) {
-        //It's a New File
-      }
-      fs.open('tempFiles/' + Name, "a", 0755, function(err, fd) {
-        if(err) {
-          console.log(err);
-        } else {
-          Files[Name]['Handler'] = fd; //We store the file handler so we can write to it later
-          socket.emit('MoreData', { 'Place' : Place, Percent : 0 });
-        }
+    ss(socket).on('Upload', function (stream, data) {
+
+      var fileName = path.basename(data.Name).split(' ').join('_');
+      var writeStream = fs.createWriteStream(TEMP+fileName);
+      stream.pipe(writeStream);
+      stream.on('error', function() {
+        log.error('error handled')
+      });
+      stream.on('end', function() {
+        log.info('success uploaded!!');
+        probe(TEMP+fileName, function(err, probeData) {
+          //if user change file extension for hack
+          if(err)
+            return socket.emit('done', {success: false});
+          var ext = probeData.fileext;
+          var trackName = probeData.filename;
+          //if user upload file other format(ACC, mp2 )
+          if(ext != '.mp3' && ext != '.mp4' && ext != '.ogg' && ext != '.wav' && ext != '.wma') {
+            fs.unlinkSync(TEMP + trackName);
+            return socket.emit('done', {success: false});
+          }
+
+           if(ext != ".mp3") {
+             //We need file name without extension
+             var nameWithoutExt = trackName.split('.');
+             nameWithoutExt = nameWithoutExt.slice(0, nameWithoutExt.length - 1).join('');
+             //Convert file to .mp3
+             exec("ffmpeg -i " + TEMP+trackName  + " " +  DOWNLOAD+nameWithoutExt+".mp3", function(err){
+               if(err) return socket.emit('done', {success: "errorConversation"});
+               fs.unlinkSync(TEMP + trackName);
+             });
+             return socket.emit('done', {trackName : nameWithoutExt+".mp3", success: true});
+           }
+        var readable = fs.createReadStream(TEMP+fileName);
+        readable.pipe(fs.createWriteStream(DOWNLOAD+trackName));
+        readable.on('end', function() {
+          fs.unlinkSync(TEMP + trackName);
+          return socket.emit('done', {trackName : trackName, success: true});
+        });
+
+        });
       });
     });
-
-    socket.on('Upload', function (data) {
-      var Name = data['Name'];
-      Files[Name]['Downloaded'] += data['Data'].length;
-      Files[Name]['Data'] += data['Data'];
-      if( Files[Name]['Downloaded'] == Files[Name]['FileSize'] ) {//If File is Fully Uploaded
-
-        fs.write( Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen) {
-          var inp = fs.createReadStream('tempFiles/' + Name);
-          var out = fs.createWriteStream('mp3/' + Name);
-          inp.pipe(out);
-          out.on('close', function(err, arg) {
-            if(err) log.error(err)
-            fs.unlink( 'tempFiles/' + Name, function (err) { //This Deletes The Temporary File
-              if(err) log.error(err);
-              socket.emit('Done', {'trackName': Name, 'FileSize': Files[Name]['FileSize']});
-            });
-          });
-        })
-      } else if( Files[Name]['Data'].length > 10485760 ){ //If the Data Buffer reaches 10MB
-        fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen){
-          Files[Name]['Data'] = ""; //Reset The Buffer
-          var Place = Files[Name]['Downloaded'] / 524288;
-          var Percent = (Files[Name]['Downloaded'] / Files[Name]['FileSize']) * 100;
-          socket.emit('MoreData', { 'Place' : Place, 'Percent' :  Percent});
-        });
-      } else {
-        var Place = Files[Name]['Downloaded'] / 524288;
-        var Percent = (Files[Name]['Downloaded'] / Files[Name]['FileSize']) * 100;
-        socket.emit('MoreData', { 'Place' : Place, 'Percent' :  Percent});
-      }
-    });
-
-
   });
 
   return io
 };
-
