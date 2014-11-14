@@ -42,9 +42,15 @@ define(['app'], function(App) {
 
     var API = {
       listLetters: function() {
+        var generalWrapper = $('.general');
+        if( !generalWrapper.hasClass('wrap') ) {
+          generalWrapper.addClass('wrap').end();
+        }
+
+
         require(['apps/landing/list/listController'], function(ListController) {
           _executeAction(ListController.listLetters, {});
-        })
+        });
       }
     };
     //Запускаем landingPage

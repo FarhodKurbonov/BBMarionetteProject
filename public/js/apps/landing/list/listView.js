@@ -16,6 +16,7 @@ define(['app',
      */
     List.Layout = LayoutView.extend({
       template: layoutTpl,
+      className: 'content landing-page',
       regions: {
         searchRegion  : "#search-region",
         lettersRegion: "#letters-region"
@@ -61,7 +62,7 @@ define(['app',
      */
     List.Letter = ItemView.extend({
       tagName: 'li',
-      className: 'label label-success',
+      className: 'label',
       template: letterItemTpl,
 
       events: {

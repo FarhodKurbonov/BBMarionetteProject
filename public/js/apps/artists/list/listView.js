@@ -129,7 +129,7 @@ define(['app',
 
     List.Artists = CompositeView.extend({
       tagName: 'div',
-      className: 'table-responsive',
+      className: 'table',
       template: artistsList,
       emptyView: List.Empty,
       childView: List.Artist,

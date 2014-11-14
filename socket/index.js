@@ -7,13 +7,14 @@ var config    = require('config'),
   Artist      = require('models/artist').Artist,
   Track       = require('models/track').Track,
   fs          = require('fs'),
-  util        = require('util'),
+  crypto      = require('crypto'),
   path        = require('path'),
   ss          = require('socket.io-stream'),
-  exec = require('child_process').exec,
-  probe = require('node-ffprobe'),
-  DOWNLOAD       = 'mp3/',
-  TEMP           = 'temp/';
+  exec        = require('child_process').exec,
+  probe       = require('node-ffprobe'),
+  translit    = require('translitit-cyrillic-russian-to-latin/lib/translitit-cyrillic-russian-to-latin'),
+  DOWNLOAD    = 'mp3/',
+  TEMP        = 'temp/';
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
@@ -42,7 +43,7 @@ module.exports = function(server) {
           if(err.name === 'MongoError') {
             error.nameError = err.message;
             if(err.errors.name) error.name = err.errors.name.message;
-            if(err.errors.avatar) error.avatar =err.errors.name.message;
+            if(err.errors.avatar) error.avatar = err.errors.name.message;
             return callback({
               status: 422,
               errors: error
@@ -63,7 +64,7 @@ module.exports = function(server) {
     socket.on('artists:read', function(data, callback) {
       Artist.fetch(data, function(err, result) {
         if(err) {
-          return callback(new SocketError(404, 'Not Found artists'));
+          return callback({error: err.message});
         } else {
           return callback(null, result)
         }
@@ -153,69 +154,95 @@ module.exports = function(server) {
         if(err) {
           var error = {};
           if(err.name == "MongoError") {
-            error.name = err.message;
+            if(err.errors.name) error.name = err.errors.name.message;
             return callback({
               status: 422,
               errors: error,
-              entity: artist
+              entity: track
             });
           }
-          if(err.errors.name) error.name = err.errors.name.message;
-          if(err.errors.avatar) error.avatar = err.errors.avatar.message;
-
-          return callback({
+          if(err.name=='TrackError') {
+            error.fileName = err.message;
+          }
+            return callback({
             status: 422,
             errors: error,
-            entity: artist
+            entity: track
           });
         } else {
-          return callback(null, artist);
+          return callback(null, track);
         }
       });
 
     });
+    socket.on('tracks:delete', function(artist, callback) {
+      //Удаляем контакт
+      //Отправить обратно the result
+      Track.deleteTrack(artist, function(err, artist) {
 
+        if(err) {
+          return callback(new SocketError(404, err.message));
+        }
+        return callback(null, artist);
+      });
+    });
 
 
     //=======Upload Files========
     ss(socket).on('Upload', function (stream, data) {
 
-      var fileName = path.basename(data.Name).split(' ').join('_');
-      var writeStream = fs.createWriteStream(TEMP+fileName);
+      var fullFileName = path.basename(data.Name).split(' ').join('_');
+      var hash = crypto.randomBytes(10).toString('hex');
+      var spFlName= fullFileName.split('.');
+      var fileName = spFlName.slice(0, spFlName.length - 1).join('');
+      var extension = spFlName[spFlName.length - 1];
+      fullFileName = fileName +'_' + hash + '_'+ '.' + extension;
+      fullFileName = translit(fullFileName);
+      log.info(fullFileName);
+      var writeStream = fs.createWriteStream(TEMP+fullFileName);
       stream.pipe(writeStream);
       stream.on('error', function() {
         log.error('error handled')
       });
       stream.on('end', function() {
         log.info('success uploaded!!');
-        probe(TEMP+fileName, function(err, probeData) {
+        log.info('hased digital'+hash);
+        probe(TEMP+fullFileName, function(err, probeData) {
           //if user change file extension for hack
           if(err)
             return socket.emit('done', {success: false});
           var ext = probeData.fileext;
           var trackName = probeData.filename;
           //if user upload file other format(ACC, mp2 )
-          if(ext != '.mp3' && ext != '.mp4' && ext != '.ogg' && ext != '.wav' && ext != '.wma') {
-            fs.unlinkSync(TEMP + trackName);
-            return socket.emit('done', {success: false});
+          if(ext != '.mp3' && ext!=".MP3" && ext != '.mp4' && ext != '.ogg' && ext != '.wav' && ext != '.wma') {
+            fs.unlink(TEMP + trackName, function () {
+               if(err) log.error('Ошибка при удалении файла загружженого неизвестного фоармата'+ trackName);
+              return socket.emit('done', {trackName : trackName, success: false});
+            });
+            return;
           }
 
-           if(ext != ".mp3") {
+           if(ext != ".mp3" && ext!=".MP3" ) {
              //We need file name without extension
              var nameWithoutExt = trackName.split('.');
              nameWithoutExt = nameWithoutExt.slice(0, nameWithoutExt.length - 1).join('');
              //Convert file to .mp3
              exec("ffmpeg -i " + TEMP+trackName  + " " +  DOWNLOAD+nameWithoutExt+".mp3", function(err){
                if(err) return socket.emit('done', {success: "errorConversation"});
-               fs.unlinkSync(TEMP + trackName);
+               fs.unlink(TEMP + trackName, function () {
+                 if(err) return socket.emit('done', {success: "errorConversation"});
+                 return socket.emit('done', {trackName : nameWithoutExt+".mp3", success: true});
+               })
              });
-             return socket.emit('done', {trackName : nameWithoutExt+".mp3", success: true});
+             return;
            }
-        var readable = fs.createReadStream(TEMP+fileName);
+        var readable = fs.createReadStream(TEMP+trackName);
         readable.pipe(fs.createWriteStream(DOWNLOAD+trackName));
         readable.on('end', function() {
-          fs.unlinkSync(TEMP + trackName);
-          return socket.emit('done', {trackName : trackName, success: true});
+          fs.unlink(TEMP + trackName, function (err) {
+            if(err) return socket.emit('done', {trackName : trackName, success: false});
+            return socket.emit('done', {trackName : trackName, success: true});
+          });
         });
 
         });

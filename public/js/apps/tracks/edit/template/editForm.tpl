@@ -1,10 +1,12 @@
 <form class="form-horizontal" role="form">
 
   <div class="form-group has-feedback">
-    <label for="trackName" class="col-md-3 control-label">Приклепленнный  файл</label>
+    <label for="track-fileName" class="col-md-3 control-label">Приклепленнный  файл</label>
     <div class="col-md-9">
-      <input type="text" id="artistName" class="form-control" value="<%= url.urlM.split('/')[2] %>" name="trackName"/>
+      <input type="text" id="track-fileName" class="form-control" value="<%= url.urlM.split('/')[1] %>" name="trackName"/>
+      <input type="hidden" id="reload" value="" name="reload"/>
       <i class="glyphicon glyphicon-paperclip form-control-feedback"></i>
+
       <p class="help-block update-file">
         <u>Хотите прикрепить новый файл? <i class="glyphicon glyphicon-chevron-down" ></i> </u>
       </p>
@@ -45,7 +47,7 @@
   <div class="form-group">
     <label for="trackName" class="col-md-3 control-label">Название песни</label>
     <div class="col-md-9">
-      <input type="text" id="artistName" class="form-control" name="name" value="<%= name %>"/>
+      <input type="text" id="trackName" class="form-control" name="name" value="<%= name %>"/>
       <p class="help-block">Пожалуйста напишите только название песни без дополнительной информации</p>
     </div>
   </div>
@@ -110,5 +112,4 @@
   </div>
 </form>
 
-<% } %>
 

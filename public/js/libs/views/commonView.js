@@ -110,6 +110,7 @@ define(['app',
 
     Common.ContentHeader = LayoutView.extend({
       template: ContentHeaderLayout,
+      className: 'row',
       regions: {
         pageHeaderRegion: '#page-header',
         thumbnailsRegion: '#thumbnails'
@@ -135,15 +136,17 @@ define(['app',
         })
       }
     });
+
     Common.PageHeader = ItemView.extend({
       template: pageHeaderTpl,
       serializeData: function(options) {
         var data = ItemView.prototype.serializeData.apply(this, arguments);
         data.allOrSingleArtist = this.options.allOrSingleArtist;
-        console.dir(data.allOrSingleArtist);
+        //console.dir(data.allOrSingleArtist);
         return data;
       }
     });
+
     Common.Thumbnail = ItemView.extend({
       template: thumbnailTpl,
       className: 'thumbnail',
@@ -163,6 +166,7 @@ define(['app',
 
       }*/
     });
+
     Common.Thumbnails = CompositeView.extend({
       template: thumbnailsTpl,
       childView: Common.Thumbnail,
@@ -176,7 +180,6 @@ define(['app',
          }
       }
     });
-
 
     Common.ContentMain   = LayoutView.extend({
       template: ContentMainLayout,

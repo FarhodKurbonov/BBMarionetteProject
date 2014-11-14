@@ -3,7 +3,7 @@
   <label for="trackName" class="col-md-3 control-label">Приклепленнный  файл</label>
   <div class="col-md-9">
     <input type="text" id="trackName" class="form-control" value="<%=trackName%>" name="trackName" disabled="true"/>
-    <span class="glyphicon glyphicon-paperclip form-control-feedback"></span>
+    <i class="glyphicon glyphicon-paperclip form-control-feedback"></i>
   </div>
 </div>
 

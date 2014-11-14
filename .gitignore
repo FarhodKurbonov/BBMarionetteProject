@@ -68,12 +68,16 @@ coverage
 build/Release
 
 #Ignore all node_modules
-
 node_modules
+
 #Sass cache files
 .sass-cache
+
 #tempFiles
-tempFiles
+temp
+
+#mp3 files
+mp3
 # Users Environment Variables
 .lock-wscript
 

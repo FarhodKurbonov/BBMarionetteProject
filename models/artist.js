@@ -94,9 +94,12 @@ schema.statics.fetch = function(data, callback) {
   if(data.parentID) {
 
     Letter.find({letter: data.parentID}).exec(function(err, letter) {
+      //if error handled while query process
       if(err) return callback(err);
-      letter = letter[0].toObject();
+      //if not found needed letter return empty object
+      if(letter.length == 0) return callback(err, letter);
 
+      letter = letter[0].toObject();
       Artist.find({letterId: letter._id}).exec(function(err, artists) {
         if(err) return callback(err);
         artists = artists.map(function (artist) {

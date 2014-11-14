@@ -49,8 +49,8 @@ schema.statics.create = function(data, callback) {
  */
 schema.statics.fetch = function(data, callback) {
   var Letter = this;
-
-    Letter.find({}).exec(function(err, result){
+    //Find all letters and sort
+    Letter.find({}, null, {sort: {letter: 'asc'}}).exec(function(err, result){
       result = result.map(function (contact) {
         var cont =  contact.toObject();
         return cont;

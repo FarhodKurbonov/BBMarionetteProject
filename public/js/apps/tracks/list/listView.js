@@ -94,7 +94,9 @@ define(['app',
       tagName: 'tr',
       template: trackItemTpl,
       events: {
-        'click td a.js-edit': 'editClicked'
+        'click td a.js-edit': 'editClicked',
+        'click td a.js-download': 'downloadClicked',
+        'click td i.js-play': 'playClicked'
       },
       triggers: {
         "click td a.js-show": {
@@ -123,6 +125,15 @@ define(['app',
         e.preventDefault();
         e.stopPropagation();
         this.trigger('track:edit', this.model);
+      },
+      downloadClicked: function(e) {
+        //e.preventDefault();
+        e.stopPropagation();
+        //alert('Download clicked');
+      },
+      playClicked: function (e) {
+        //$(e.target).toggleClass('glyphicon-pause', 'glyphicon-play-circle');
+        //this.trigger('track:play', this.model);
       }
     });
 
@@ -136,7 +147,7 @@ define(['app',
         this.collection = this.model.get('list');
         this.listenTo(this.collection, 'reset', function () {
           this.appendHtml = function (collectionView, itemView, index) {
-            collectionView.$el.append(itemView.el)
+            collectionView.$el.append(itemView.el);
           }
         });
         /**
@@ -150,6 +161,9 @@ define(['app',
         });
         this.on('childview:track:delete', function(view, model) {
           this.trigger('track:delete', {itemView: view, itemModel: model});//это событие ловит ContentMain
+        });
+        this.on('childview:track:play', function(view, model) {
+          this.trigger('track:play', {itemView: view, itemModel: model});//это событие ловит ContentMain
         });
 
       },

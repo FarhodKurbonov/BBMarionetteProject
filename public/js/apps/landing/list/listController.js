@@ -37,7 +37,7 @@ define([
               });
 
               self.listenTo(lettersListLayout, 'show', function() {
-                lettersListLayout.searchRegion.show(searchForm);
+                //lettersListLayout.searchRegion.show(searchForm);
                 lettersListLayout.lettersRegion.show(lettersListView);
               });
 

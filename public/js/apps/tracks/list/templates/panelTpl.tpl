@@ -1,1 +1,1 @@
-<button class="btn btn-default btn-sm js-new"><i class="glyphicon glyphicon glyphicon-plus"></i> Добавить</button>
+<button class="btn btn-default btn-sm js-new"><i class="glyphicon glyphicon-plus-sign"></i> Добавить</button>

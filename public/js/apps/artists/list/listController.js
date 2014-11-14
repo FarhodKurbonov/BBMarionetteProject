@@ -3,7 +3,8 @@ define([
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
   'apps/artists/list/listView',
-  'tpl!apps/artists/common/dialogForm/form.tpl'
+  'tpl!apps/artists/common/dialogForm/form.tpl',
+  'affix'
 ], function (App, ViewsCommon, Controllers, View, dialogTpl) {
 
   App.module('ArtistsApp.List', function(List, App, Backbone, Marionette, $, _) {
@@ -34,7 +35,6 @@ define([
                       panel.triggerMethod('set:filter:criterion', options.criterion);
                     });
                   }
-
 
                   var lettersListView = new ViewsCommon.RuEnView({
                     collection: letters,
@@ -109,7 +109,8 @@ define([
                               var keys = ['name'];
                               if (response.status === 422) {
                                 console.log('Произошла ошибка: ', response);
-                                view.triggerMethod('form:data:invalid', response.errors);
+                                //Указываем что поля начинающиеся artist нужно отметить ошибками
+                                view.triggerMethod('form:data:invalid',{errors: response.errors,field:'#artist-'});
                               }
                             });
                         } else {
@@ -152,8 +153,9 @@ define([
                                 var keys = ['name', 'avatar'];
                                 model.refresh(response.entity, keys);
                                 view.render();
-                                view.triggerMethod('form:data:invalid', response.errors);
-                                model.set(response.entity, {silent: true});
+                                //Указываем что поля начинающиеся artist нужно отметить ошибками
+                               view.triggerMethod('form:data:invalid',{errors: response.errors,field:'#artist-'});
+                               model.set(response.entity, {silent: true});
 
                               }
                             });

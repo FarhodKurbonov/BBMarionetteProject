@@ -3,6 +3,7 @@ requirejs.config({
   paths  : {
     'socket.io' : 'vendor/socket.io',
     'backbone'  : 'vendor/backbone',
+
     'jquery'    : 'vendor/jquery',
     'jquery-ui' : 'vendor/jquery-ui',
     'json2'     : 'vendor/json2',
@@ -18,7 +19,11 @@ requirejs.config({
     'spin.jquery':'vendor/spin.jquery',
     'picky'     : 'vendor/backbone.picky',
     'affix'     : 'vendor/bootstrap/affix',
-    'ss'        : 'vendor/socket.io-stream'
+    'ss'        : 'vendor/socket.io-stream',
+    'soundmanager2' : 'vendor/soundmanager2',
+    'scroller'  : 'vendor/jscroller',
+    'bootsrap-collapse': 'vendor/bootstrap/affix'
+
 
   },
   shim   : {
@@ -40,6 +45,15 @@ requirejs.config({
       deps: ['backbone'],
       exports: 'Marionette'
     },
+
+    'soundmanager2': {
+      exports: 'soundManager'
+    },
+
+    'scroller': {
+      exports: '$jScroller'
+    },
+
     'iosync'     : ['backbone', 'socket.io'],
     'jquery-ui'  : ['jquery'],
     'validation' : ['backbone'],
@@ -48,13 +62,14 @@ requirejs.config({
     'syphon'     : ['backbone'],
     'spin.jquery': ['jquery','spin'],
     'picky'      : ['backbone'],
-    'affix'      : ['jquery']
+    'affix'      : ['jquery'],
+    'bootsrap-collapse': ['jquery']
   }
 });
 var self = this;
-require(['socket.io', 'app', 'apps/header/HeaderApp', 'apps/footer/FooterApp'], function(io, App) {
+require(['socket.io', 'app', 'apps/header/HeaderApp', 'apps/footer/FooterApp', 'apps/player/playerApp'], function(io, App) {
   window.socket = io.connect('');
   self.App = App;
   App.start();
-  console.dir('Start main App');
+  console.info('Start main App');
 });

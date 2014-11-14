@@ -32,9 +32,9 @@ define([
         url          : '',
         uploadUserId : '',
         likeVSdislike: '',
-        duration     : '',
-        bitRate      : '',
-        size         : '',
+        duration     : 0,
+        bitRate      : 0,
+        size         : 0,
         downloadCount: '',
         Pl_UserId    : '',
         listenCount  : 0,
@@ -90,8 +90,8 @@ define([
             var tracksCollection = new Entities.Tracks(tracks);
             letter.set('list', tracksCollection);
           });
-          console.log(tracks);
-          console.log(chunkedTracks);
+          //console.log(tracks);
+          //console.log(chunkedTracks);
           defer.resolveWith(response, [chunkedTracks]);
         });
 

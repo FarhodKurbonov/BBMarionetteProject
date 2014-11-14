@@ -6,19 +6,26 @@ define(['app'], function(App) {
    *            оптимизации используемой памяти освобождая ее от неизпользуемый данных которые модули
    *            загружают
    */
+
   App.module('TracksApp', function(TracksApp, App, Backbone, Marionette, $, _) {
     TracksApp.startWithParent = false;
 
-    TracksApp.onStart = function() {
+    TracksApp.onBeforeStart = function() {
       console.info('Start TracksApp!');
+      App.module('HeaderApp').start();
+      App.module('FooterApp').start();
+      App.module('PlayerApp').start();
 
     };
     /**
      * Запускаем Модули Header and Footer
      */
 
-    TracksApp.onStop = function () {
+    TracksApp.onBeforeStop = function () {
       console.info('Stop TracksApp');
+      App.module('HeaderApp').stop();
+      App.module('FooterApp').stop();
+      App.module('PlayerApp').stop();
     };
 
   });
@@ -29,9 +36,7 @@ define(['app'], function(App) {
   App.module('Routers.TracksApp', function(RoutersTracksApp, App, Backbone, Marionette, $, _) {
     RoutersTracksApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
-        'tracks/:artist/:id(/filter/:params)': 'listTracks',
-        'tracks/:artist/track/:id/edit': 'editTrack',
-        'tracks/:artist/track/:id/show': 'showTrack'
+        'tracks/:artist/:id': 'listTracks'
       }
     });
     /**
@@ -81,16 +86,17 @@ define(['app'], function(App) {
      */
     var _executeAction = function(action, args) {
       App.startApp('TracksApp');
+      console.info('start TracksApp');
       action(args);
     };
 
     var API = {
       listTracks: function(artist, id, params) {
-        //----------Unwrap wrapper---------
+        //----------delete wrap class---------
         //Убираем обертку. Небоходимо для задуманной верстки макета
-        var mainRegion = $('#main-region');
-        if(mainRegion.parent().is('.wrap')){
-          mainRegion.unwrap();
+        var generalWrapper = $('.general');
+        if( generalWrapper.hasClass('wrap') ) {
+          generalWrapper.removeClass('wrap').end();
         }
 
         //---------------Start TracksApp---------------------
@@ -101,19 +107,14 @@ define(['app'], function(App) {
           _executeAction(ListController.listTracks, options);
           //App.execute('set:active:header', 'artists');
         })
-      },
-      editTrack : function () {
-
-      },
-      showTrack: function() {
-
       }
+
     };
     /**
      * Обработчик события изменения номера страницы в pageControl
      */
-/*    this.listenTo(App, 'page:change', function (options) {
-      App.navigate('artists/'+ lt +'/filter/' + serializeParams(options));
+/*    this.listenTo(App, 'track:play', function (model) {
+      API.play(model);
     });*/
     /**
      * Обработчик вывода списка артистов

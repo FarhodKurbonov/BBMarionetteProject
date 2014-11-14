@@ -2,7 +2,8 @@ define([
   'app',
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
-  'apps/tracks/list/listView'
+  'apps/tracks/list/listView',
+  'affix'
 ], function (App, ViewsCommon, Controllers, View) {
 
   App.module('TracksApp.List', function(List, App, Backbone, Marionette, $, _) {
@@ -43,14 +44,15 @@ define([
               pager: false,
               propagatedEvents: [
                 'childview:track:edit',
-                'childview:track:delete'
-
+                'childview:track:delete',
+                'childview:track:play'
               ]
             });
 
-            self.listenTo(contentMain, 'childview:track:delete', function (childView, model) {
-              alert('delete clicked');
-            //model.model.destroy();//тоже самое что models.collection.remove(models)
+            self.listenTo(contentMain, 'childview:track:delete', function (childView, options) {
+              var model = options.itemModel;
+              childView = options.itemView;
+              model.model.destroy();//тоже самое что models.collection.remove(models)
             });
 
             self.listenTo(Layout, 'show', function() {
@@ -74,11 +76,11 @@ define([
                  * Выводим диалоговое окно для загрузки файла, в котором анимированно загружается файл.
                  * После загрузки файла генерится форма нового трека.
                  */
-                require(['' +
-                  'apps/tracks/new/uploader',
-                  'tpl!apps/tracks/new/templates/addNewTrackForm.tpl'
-                ], function(startUploadFile, addNewTrackForm) {
-                  startUploadFile(addNewTrackForm);//Запускаем скрипт для загрузки файла
+                require([
+                        'apps/tracks/common/uploader',
+                        'tpl!apps/tracks/new/templates/addNewTrackForm.tpl'
+                ], function(Upload, addNewTrackForm) {
+                  Upload.startUploadFile(addNewTrackForm);//Запускаем скрипт для загрузки файла
                   self.listenTo(view, 'form:submit', function (data) {
                     data.artistId = options.id;
                     var trackSaved = newTrack.save(data);//Сохраняем данные
@@ -117,55 +119,87 @@ define([
 
             self.listenTo(contentMain, 'childview:track:edit', function (childView, options) {
 
-              require(['apps/tracks/edit/editView',
-                       'tpl!apps/tracks/common/dialogForm/addForm.tpl'
+              require([
+                       'apps/tracks/edit/editView',
+                       'tpl!apps/tracks/edit/template/editForm.tpl'
               ], function (Edit, extendFormTpl) {
+                // Marionette по умолчанию  передает
+                // вид первой степени вложенности
+                // А у нас вложенный вид второй степени, поэтому
+                // через options мы передем самый последний вид вложенности а также модель
                 var model = options.itemModel;
-                    childView = options.itemView;
+                childView = options.itemView;
                 var view = new Edit.Track({
                   template: extendFormTpl,
                   model: model
                 });
+                require([
+                         'apps/tracks/common/uploader',
+                        'tpl!apps/tracks/edit/template/uploadSuccess.tpl'
+                ], function (Upload, uploadSuccessTpl) {
+                  Upload.startUploadFile(uploadSuccessTpl);
+                  view.on('form:submit', function (data) {
+                    model.set(data, {silent: true});
+                    var updateModel = options.itemModel.save(data,{wait: true});
 
-                view.on('form:submit', function (data) {
-                  model.set(data, {silent: true});
-                  var updateModel = options.itemModel.save(data,{wait: true});
+                    if (updateModel) {
+                      view.onBeforeDestroy = function () {
+                        model.set({changedOnServer: false});
+                      };
+                      $.when(updateModel)
+                        .done(function () {
+                          childView.render();
+                          delete view.onDestroy;
+                          view.trigger("dialog:close");
+                          childView.flash('success');
+                        })
+                        .fail(function (response) {
+                          view.onDestroy = function () {
+                            model.set(model.previousAttributes());
+                          };
+                          if (response.status === 422) {
+                           var keys = ['trackName', 'url', 'quality', 'vocal', 'songText', 'youTubeLink', 'name'];
+                            model.refresh(response.entity, keys);
+                            view.render();
+                            //Указываем что поля начинающиеся track нужно отметить ошибками
+                            view.triggerMethod('form:data:invalid',{errors:response.errors, field:'#track-'});
+                            model.set(response.entity, {silent: true});
 
-                  if (updateModel) {
-                    view.onBeforeDestroy = function () {
-                      model.set({changedOnServer: false});
-                    };
-                    $.when(updateModel)
-                      .done(function () {
-                        childView.render();
-                        delete view.onDestroy;
-                        view.trigger("dialog:close");
-                        childView.flash('success');
-                      })
-                      .fail(function (response) {
-                        view.onDestroy = function () {
-                          model.set(model.previousAttributes());
-                        };
-                        if (response.status === 422) {
-                          var keys = ['name', 'avatar'];
-                          model.refresh(response.entity, keys);
-                          view.render();
-                          view.triggerMethod('form:data:invalid', response.errors);
-                          model.set(response.entity, {silent: true});
-
-                        }
-                      });
-                  } else {
-                    view.onDestroy = function () {
-                      model.set(model.previousAttributes());
-                    };
-                    view.triggerMethod('form:data:invalid', model.validationError);
-                  }
+                          }
+                        });
+                    } else {
+                      view.onDestroy = function () {
+                        model.set(model.previousAttributes());
+                      };
+                      view.triggerMethod('form:data:invalid', model.validationError);
+                    }
+                  });
                 });
+
 
                 App.dialogRegion.show(view)
               })
             });
+
+/*            self.listenTo(contentMain, 'childview:track:play', function(childView, options) {
+              var model = options.itemModel;
+              childView = options.itemView;
+
+              require([ 'apps/tracks/player/playerController'], function (Player) {
+                var id = model.get('id');
+
+                  if(Player.start){
+                    var sound = Player.theMP3(id);
+                    sound.play();
+                    Player.start = false;
+                  } else{
+                    sound.resume();
+                  }
+
+              });
+
+              App.trigger('track:play', model);// Передали управление  tracksApp
+            });*/
 
             App.mainRegion.show(Layout);
 

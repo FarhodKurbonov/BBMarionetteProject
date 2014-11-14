@@ -1,11 +1,16 @@
 @import "compass/css3";
-
-  //== Colors
+//===========================Variables===================
+  //==================== Colors =======================
   $gray-darker:            lighten(#000, 13.5%); // #222
   $gray-dark:              lighten(#000, 20%);   // #333
   $gray:                   lighten(#000, 33.5%); // #555
   $gray-light:             lighten(#000, 46.7%); // #777
-  $gray-lighter:             lighten(#000, 93.5%); // #eee
+  $gray-lighter:           lighten(#000, 93.5%); // #eee
+  $mediumorchid:           #cd31d6;
+  $linen:                  #f5f3e5;
+  $white:                  #ffffff;
+  $mediumseagreen:          #43d789;
+  $mediumaquamarine:       #43d789;
 
   $brand-primary:         #428bca;
   $brand-success:         #5cb85c;
@@ -13,65 +18,71 @@
   $brand-warning:         #f0ad4e;
   $brand-danger:          #d9534f;
 
- //## Settings for some of the most global styles.
-
-  //** Background color for `<body>`.
-  $body-bg:               #fff;
+   //** Background color for `<body>`.
+  $body-bg:               $linen;
   //** Global text color on `<body>`.
-  $text-color:            $gray-dark;
+  $text-color:            $white;
 
-//** Global textual link color.
-$link-color:            $brand-primary;
-//** Link hover color set via `darken()` function.
-$link-hover-color:      darken($link-color, 15%);
+  //** Global textual link color.
+  $link-color:            $brand-primary;
+  //** Link hover color set via `darken()` function.
+  $link-hover-color:      darken($link-color, 15%);
+  //===========font size============================
+  $base-font-size:          1.4rem;
+  $base-font-family:        'Philosopher', sans-serif;
 
+//=====================Styles=======================
+.clear-wrap {
+}
 
 body {
-  background: $gray-lighter;
-  overflow:hidden;
+  background: $body-bg;
 }
 
-body > .wrap {
-  position: absolute;
-  margin-top: 100px;
-  left:50%; margin-left:-450px;
-  width: 900px;
+.landing-page {
+  margin-top: 10.25rem;
+
   min-height: 100px;
-  z-index: 2;
+  min-width: 320px;
   color: $text-color;
-
 }
-.wrap h1 {
-    font-size: 64px;
-    z-index: 2;
-    font-family: "Helvetica Neue",Helvetica,"Nimbus Sans",Arial,sans-serif;
+
+.landing-page h3 {
+    font-size: 3.25em;
+    font-family: $base-font-family;
     font-weight: lighter;
     text-align: center;
+    color: $mediumorchid;
 }
 
-.wrap input{
+.landing-page input{
     @include border-radius(40px, 40px);
     margin: 40px auto 10px;
     width: 80%;
     background-color: rgba(0, 0, 0, 0.5);
 
 }
-  .wrap p, .wrap ul {
+
+.landing-page ul {
     margin: 0 auto;
     width: 80%;
     text-align: center;
     font-weight: lighter;
     text-transform: lowercase;
   }
-  .wrap p {
-    margin-bottom: 15px;
+
+.landing-page ul {
+    font-size: 1.3em;
   }
-  .wrap ul {
-    font-size: 15px;
-  }
-  .wrap li {
+.landing-page li {
     margin: 2px;
+    background-color: $mediumseagreen;
+    border: 1.45px solid $mediumaquamarine;
   }
-  .wrap ul li a {
-    color: $body-bg;
-  }
+.landing-page ul li a {
+    color: $white;
+}
+.landing-page li:hover {
+  background-color: darken($mediumaquamarine, 13.5%);
+  border: 1.45px solid $mediumseagreen;
+}

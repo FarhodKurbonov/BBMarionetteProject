@@ -30,8 +30,8 @@
     "async": "*",
     "grunt-node-inspector": "*",
     "socket.io-stream": "*",
-    "node-ffprobe":"*"
-
-
+    "node-ffprobe":"*",
+    "glob": "*",
+    "mime": "*"
   }
 }

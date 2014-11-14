@@ -22,8 +22,9 @@ define([
 
     var initializeHeaders = function () {
       Entities.headers = new Entities.Headers([
-        {name: 'Топ100',        url: 'top100', navigationTrigger: "top:list"},
-        {name: 'Вход/Регистрация', url: 'auth',  navigationTrigger: "auth:show"}
+        {}
+/*        {name: 'Топ100',        url: 'top100', navigationTrigger: "top:list"},
+        {name: 'Вход/Регистрация', url: 'auth',  navigationTrigger: "auth:show"}*/
       ])
     };
 

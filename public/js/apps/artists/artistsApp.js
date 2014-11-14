@@ -9,20 +9,25 @@ define(['app'], function(App) {
   App.module('ArtistsApp', function(ArtistsApp, App, Backbone, Marionette, $, _) {
     ArtistsApp.startWithParent = false;
 
-    ArtistsApp.onStart = function() {
+    ArtistsApp.onBeforeStart = function() {
       console.info('Start ArtistsApp!');
-
+      App.module('HeaderApp').start();
+      App.module('FooterApp').start();
+      //App.module('PlayerApp').start();
 
     };
     /**
      * Запускаем Модули Header and Footer
      */
-    ArtistsApp.addInitializer(function() {
-      App.module('HeaderApp').start();
-      App.module('FooterApp').start();
-    });
-    ArtistsApp.onStop = function () {
-      console.info('Stop ArtistsApp')
+/*    ArtistsApp.addInitializer(function() {
+
+    });*/
+
+    ArtistsApp.onBeforeStop = function () {
+      console.info('Stop ArtistsApp');
+      App.module('HeaderApp').stop();
+      App.module('FooterApp').stop();
+      //App.module('PlayerApp').stop();
     };
 
   });
@@ -90,12 +95,13 @@ define(['app'], function(App) {
     var API = {
       listArtists: function(letter, params) {
         lt = letter;
-        //----------Unwrap wrapper---------
+        //----------delete wrap class---------
         //Убираем обертку. Небоходимо для задуманной верстки макета
-        var mainRegion = $('#main-region');
-        if(mainRegion.parent().is('.wrap')){
-          mainRegion.unwrap();
+        var generalWrapper = $('.general');
+        if( generalWrapper.hasClass('wrap') ) {
+          generalWrapper.removeClass('wrap').end();
         }
+
         //---------------Start ArtistsApp---------------------
         require(['apps/artists/list/listController'], function(ListController) {
           var options = parseParams(params);

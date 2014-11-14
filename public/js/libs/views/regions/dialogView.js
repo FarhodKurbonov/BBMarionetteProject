@@ -15,7 +15,7 @@ define([
       }
 
 
-    })
+    });
    
     _.extend(Dialog.Form.prototype, {
 
@@ -25,7 +25,7 @@ define([
         this.trigger('form:submit', data)
       },
 
-      onFormDataInvalid: function (errors) {
+      onFormDataInvalid: function (options) {
         var $view = this.$el;
 
         var clearFormErrors = function () {
@@ -40,12 +40,13 @@ define([
 
         var markErrors = function (value, key) {
 
-          var $controlGroup = $view.find('#artist-' + key).parent();
+          var $formControl = $view.find(options.field + key).parent();
           var $errorElement = $('<span>', {class: 'help-block has-error', text: value});
-          $controlGroup.append($errorElement).addClass('has-error');
+          $formControl.append($errorElement).addClass('has-error');
         };
         clearFormErrors();
-        _.each(errors, markErrors);
+        _.each(options.errors, markErrors);
+        $('.update-file').hide();
       }
     });
   });

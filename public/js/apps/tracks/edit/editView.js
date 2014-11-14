@@ -9,7 +9,7 @@ define(['app', 'libs/views/regions/dialogView'], function(App, ViewsCommonDialog
           var $title = $('<h1>', {text: this.title});
           this.$el.prepend($title);
         }
-        this.$('.js-submit').text('Обновить');
+        //this.$('.js-submit').text('Обновить');
 
         this.$('.update-file').on('click', function(event) {
           if($(this).hasClass('clicked')) {
@@ -17,9 +17,6 @@ define(['app', 'libs/views/regions/dialogView'], function(App, ViewsCommonDialog
             $(this).removeClass('clicked')
           } else {
             $('.upload-wrapper').fadeIn();
-            require(['apps/tracks/new/uploader'], function(startUploadFile){
-              startUploadFile();
-            });
             $(this).addClass('clicked')
           }
 

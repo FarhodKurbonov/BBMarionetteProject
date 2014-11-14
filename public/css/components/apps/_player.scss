@@ -1,0 +1,97 @@
+@import "compass/css3";
+
+// Colors
+$turquoise:      #31d6d2;
+$mediumorchid:   #cd31d6;
+$linen:          #f4f3eb;
+$mediumseagreen: #43d789;
+$mediumaquamarine: #43d789;
+$gray:             #cccccc;
+
+.player-wrap {
+  @include background-image( linear-gradient(to top, $turquoise, lighten($turquoise, 15%), lighten($turquoise, 30%), lighten($turquoise, 45%)) );
+  @include opacity(0.75);
+
+    padding: 0.5rem;
+    margin: 1rem 5px 2rem;
+    @include background-image( linear-gradient(to top, $turquoise, lighten($turquoise, 15%), lighten($turquoise, 30%), lighten($turquoise, 45%)) );
+
+    -webkit-box-shadow:  0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+
+    -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+
+  .player-wrap:before, .player-wrap:after {
+    content:"";
+    position:absolute;
+    z-index:-2;
+  }
+}
+
+.row {
+  .info-block {
+    margin-top: 0.75rem;
+    margin-bottom: 1.75rem;
+
+    .scroller-container {
+      height: 20px;
+
+      position: relative;
+      -webkit-box-shadow: inset -2px -2px 10px lighten($turquoise, 45%);
+      -moz-box-shadow: inset -2px -2px 10px lighten($turquoise, 45%);
+      box-shadow: inset -2px -2px 10px lighten($turquoise, 45%);
+      overflow: hidden;
+
+      #scroller {
+        white-space: nowrap;
+      }
+      #scroller p {
+        padding: 0;
+      }
+    }
+  }
+}
+.row {
+  .control-buttons-block {
+    margin-top: 0.35em;
+
+    .play-button {
+      margin-top: 0.75rem;
+      margin-bottom: 0.5rem;
+
+      .js-play, .js-pause {
+        font-size: 4.5rem;
+        color: $mediumorchid;
+      }
+
+    }
+  }
+}
+
+.progress-bar-block {
+
+  margin-top: 0.35rem;
+  margin-bottom: 1.25rem;
+
+  .js-volume {
+    margin-top: 0.25rem;
+    height: 1.15rem;
+  }
+  #progressbar {
+    margin-right: 0!important;
+    height: 1.5rem!important;
+  }
+  #time {
+    padding-bottom: 0.15rem;
+  }
+}
+
+.js-play:hover {
+  cursor: pointer;
+}
+.js-pause:hover {
+  cursor: pointer;
+}

@@ -2,8 +2,10 @@
 @import "bootstrap";
 
 //-----------Custom Styles------------------
+@import 'normalize';
 @import "base";
 @import "header";
 @import "main";
 @import "footer";
 @import "upload";
+@import "player";

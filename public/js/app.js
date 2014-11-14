@@ -1,9 +1,16 @@
-define(['marionette', 'libs/config/marionette/regions/dialog'], function (Marionette) {
+define([
+  'marionette',
+  'libs/config/marionette/regions/dialog',
+], function (Marionette) {
   var App = new Marionette.Application();
   App.addRegions({
-    headerRegion: '#header-region',
+
+    headerRegion:  '#header-region',
+    playerRegion:  '#player-region',
     mainRegion  : '#main-region',
     footerRegion: '#footer-region',
+    uploadArea  : "#UploadArea",
+
     dialogRegion: Marionette.Region.Dialog.extend({
       el: '#dialog-region'
     })
@@ -44,7 +51,7 @@ define(['marionette', 'libs/config/marionette/regions/dialog'], function (Marion
       require([
         'apps/landing/lettersApp',
         'apps/artists/artistsApp',
-        'apps/tracks/tracksApp'
+        'apps/tracks/tracksApp',
       ], function() {
        Backbone.history.start();
        if(App.getCurrenRouet() === '') {

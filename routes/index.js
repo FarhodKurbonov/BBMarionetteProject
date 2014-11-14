@@ -1,12 +1,17 @@
 var express = require('express');
 var HomeController = require('../controllers/HomeController');
+var DownloadController = require('../controllers/DownloadController');
 
 
 module.exports = function(app) {
 
+  app.get('/download/:id', function(req, res, next) {
+      DownloadController.run(req, res, next);
+  });
   app.get('/',function(req, res, next) {
     HomeController.run(req, res, next);
-  } );
+  });
+
 
 
   /*var User = require('models/user').User;

@@ -1,8 +1,8 @@
 
-  <div id="header" class="navbar navbar-default" role="navigation">
-    <div class="container">
+  <div id="header" class="navbar" role="navigation">
+    <div class="container-fluid">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapsedItems">
+        <button type="button" class="navbar-toggle collapsed pull-right" data-toggle="collapse" data-target="#collapsedItems">
           <span class="sr-only">Меню</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
