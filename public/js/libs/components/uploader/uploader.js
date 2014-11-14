@@ -43,6 +43,7 @@ define(['app',
       }
 
       function StartUpload(event) {
+        if(SelectedFile.size > 16777216) return alert('Упсс, а файл то превышает допустимого лимита...');
         if( fileBox.val() != "" ) {
           var fileName = nameBox.val();
           var stream = ss.createStream();
@@ -94,7 +95,7 @@ define(['app',
             });
           });
         } else {
-          alert("Пожалуйста добавьте файл!");
+          return alert("Пожалуйста добавьте файл!");
         }
       }
 
