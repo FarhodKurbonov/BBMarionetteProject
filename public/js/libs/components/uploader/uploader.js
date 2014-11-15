@@ -1,7 +1,7 @@
 define(['app',
         'marionette',
         'ss',
-        'tpl!apps/tracks/common/spinner.tpl',
+        'tpl!libs/components/uploader/spinner.tpl',
         'spin.jquery'
 ], function(App, Marionette, ss, spinTpl){
   App.module('TracksApp.Upload', function(Upload, App, Backbone, Marionette, $, _) {
@@ -43,8 +43,9 @@ define(['app',
       }
 
       function StartUpload(event) {
-        if(SelectedFile.size > 16777216) return alert('Упсс, а файл то превышает допустимого лимита...');
+
         if( fileBox.val() != "" ) {
+          if(SelectedFile.size > 16777216) return alert('Упсс, а файл то превышает допустимого лимита...');
           var fileName = nameBox.val();
           var stream = ss.createStream();
           blobStream = ss.createBlobReadStream(SelectedFile);

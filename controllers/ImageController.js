@@ -1,32 +1,26 @@
 var BaseController = require("./BaseController"),
-  Track          = require('models/track').Track,
-  View           = require("../views/BaseView"),
-  util           = require('util'),
-  mime           = require('mime'),
-  log      = require('libs/log.js')(module),
-  fs             = require('fs');
+    View           = require("../views/BaseView"),
+    log            = require('libs/log.js')(module);
 
 module.exports = BaseController.extend({
-  name: "Download",
+  name: "ImageController",
   content: null,
   run: function(req, res, next) {
     var self = this;
-    var trackId = req.params.id;
+    var imgFile = req.params.avatar;
     //Отдаем идексную страницу
-    self.getContent(trackId, function(filePath){
-      self.sendFile(filePath, req, res);
-    })
+    res.download('avatar/'+imgFile);
+    //self.sendfile('/avatar/'+imgFile, req, res)
+
 
   },
-  getContent: function(trackId, callback) {
+  getContent: function(callback) {
     var self = this;
-    self.content = Track.downloadTrack(trackId, function (err, filePath) {
-      if (err) log.error('Error handled');
-      return callback(filePath);
-    });
+    this.content = {};
+    callback(this.content)
 
-  },
-  sendFile: function(filePath, req, res) {
+  }
+/*  sendFile: function(filePath, req, res) {
     //Определяем mime
     var mimeType = mime.lookup(filePath);
     //Удаляем ненужню шифрованную часть имени файла
@@ -52,7 +46,7 @@ module.exports = BaseController.extend({
 
       var file = fs.createReadStream(filePath, {start: start, end: end});
 
-      res.writeHead(206, {
+      res.writeHead(200, {
         'Content-disposition' : 'attachment; filename=' + sendedFileName,
         'Content-Range': 'bytes ' + start + '-' + end + '/' + total,
         'Accept-Ranges': 'bytes',
@@ -89,6 +83,5 @@ module.exports = BaseController.extend({
       file.destroy();
       log.info('file destroy');
     })
-  }
+  }*/
 });
-

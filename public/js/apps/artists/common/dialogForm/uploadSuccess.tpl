@@ -1,10 +1,8 @@
 <%
-$('.has-feedback').addClass('has-success');
-$('#track-fileName').val(trackName).attr('disabled', 'true');
-$('#reload').val('true');
-
+$('.has-feedback').addClass('has-success').end();
+$('#artist-avatar').val(avatar).attr('disabled', 'true').end();
 %>
-<div class='alert alert-success' role='alert'><b>Файл: <%=trackName%> успешно загружен</b></div>
+<div class='alert alert-success' role='alert'><b>Файл: <%=avatar%> успешно приклеплен</b></div>
 
 
 

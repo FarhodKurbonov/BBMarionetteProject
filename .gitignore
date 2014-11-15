@@ -78,6 +78,10 @@ temp
 
 #mp3 files
 mp3
+
+#avatars
+avatar
+
 # Users Environment Variables
 .lock-wscript
 

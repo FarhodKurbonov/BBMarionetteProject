@@ -7,7 +7,7 @@
 
             <div class="col-sm-9">
               <input type="file" id="FileBox" class="form-control">
-              <p class="help-block">Тип: mp3, mp4, ogg, wav или wma  Размер: не более 20MB</p>
+              <p class="help-block">Тип: mp3, mp4, ogg, wav или wma  Размер: не более 15MB</p>
             </div>
           </div>
           <div class="form-group">

@@ -1,4 +1,4 @@
-<form class="form-horizontal" role="form">
+
 
   <div class="form-group has-feedback">
     <label for="track-fileName" class="col-md-3 control-label">Приклепленнный  файл</label>
@@ -56,19 +56,19 @@
     <label class="col-md-3 control-label" for="trackType">Тип минусовки</label>
     <div class="col-md-4">
       <select name="type" id="trackType" class="form-control input-sm" >
-        <option value="caraoke"    <%- type === 'caraoke' ? 'selected': ''%> >Караоке</option>
-        <option value="guitar"     <%- type ==='guitar' ? 'selected': ''%> >Для гитарных</option>
-        <option value="saxophone"  <%- type ==='saxophone' ? 'selected': ''%> >Для саксофона</option>
-        <option value="percussion" <%- type ==='percussion' ? 'selected': ''%> >Для ударных</option>
+        <option value="caraoke"    <%- fonogrammType === 'caraoke' ? 'selected': ''%> >Караоке</option>
+        <option value="guitar"     <%- fonogrammType ==='guitar' ? 'selected': ''%> >Для гитарных</option>
+        <option value="saxophone"  <%- fonogrammType ==='saxophone' ? 'selected': ''%> >Для саксофона</option>
+        <option value="percussion" <%- fonogrammType ==='percussion' ? 'selected': ''%> >Для ударных</option>
       </select>
     </div>
 
     <div class="col-md-4">
       <select name="quality" id="trackQuality" class="form-control input-sm">
         <option value="аранжировка" <%- quality === 'аранжировка' ? 'selected': ''%> > Аранжировка</option>
-        <option value="задавка" <%- quality === 'Задавка' ? 'selected': ''%>>Задавка</option>
-        <option value="нарезка" <%- quality === 'Нарезка' ? 'selected': ''%> >Нарезка</option>
-        <option value="оригинал" <%- quality === 'Оригинал' ? 'selected': ''%> >Оригинал</option>
+        <option value="задавка" <%- quality === 'задавка' ? 'selected': ''%>>Задавка</option>
+        <option value="нарезка" <%- quality === 'нарезка' ? 'selected': ''%> >Нарезка</option>
+        <option value="оригинал" <%- quality === 'оригинал' ? 'selected': ''%> >Оригинал</option>
       </select>
     </div>
 
@@ -110,6 +110,6 @@
       <button type='button' id='UploadButton' class='btn btn-success js-submit'><i class="glyphicon glyphicon-floppy-save"></i> Сохранить</button>
     </div>
   </div>
-</form>
+
 
 

@@ -10,7 +10,7 @@ $gray:             #cccccc;
 
 .player-wrap {
   @include background-image( linear-gradient(to top, $turquoise, lighten($turquoise, 15%), lighten($turquoise, 30%), lighten($turquoise, 45%)) );
-  @include opacity(0.75);
+  @include opacity(0.55);
 
     padding: 0.5rem;
     margin: 1rem 5px 2rem;
@@ -94,4 +94,13 @@ $gray:             #cccccc;
 }
 .js-pause:hover {
   cursor: pointer;
+}
+.affix {
+  position: fixed;
+  top:0;
+  width: 100%;
+}
+
+.affix-top{
+  visibility:  hidden;
 }

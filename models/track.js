@@ -36,7 +36,8 @@ var mongoose = require('libs/mongoose'),
   //Custom error messages
   var msgTrackName = [validateTrackName, 'не может быть пустым'];
   var msgTrackUrl = [];
-  var types = ['аранжировка', 'задавка', 'нарезка', 'оригинал'];
+  var quality = ['аранжировка', 'задавка', 'нарезка', 'оригинал'];
+  var fonoType = ['caraoke', 'guitar', 'saxophone', 'percussion'];
 
 
 //=================Model=======================
@@ -93,23 +94,12 @@ var mongoose = require('libs/mongoose'),
       type: Number
     },
     fonogrammType: {
-      caraoke: {
-        type: String,
-        enum: types
-      },
-      guitar: {
-        type: String,
-        enum: types
-      },
-      saxophone: {
-        type: String,
-        enum: types
-      },
-      percussion: {
-        type: String,
-        enum: types
-      }
-
+      type: String,
+      enum: fonoType
+    },
+    quality: {
+      type: String,
+      enum: quality
     },
     vocal: {
       type: Boolean
@@ -155,7 +145,8 @@ var mongoose = require('libs/mongoose'),
       newTrack.size = probeData.format.size/1048576;
       //newTrack.Pl_UserId = '';//Пока оставим пустым
       newTrack.listenCount = '';//Пока оставим пустым
-      newTrack.fonogrammType[data.type] = data.quality;
+      newTrack.fonogrammType = data.type;
+      newTrack.quality = data.quality;
       newTrack.vocal = data.vocal;
       newTrack.songText = data.songText;
       newTrack.youTubeLink = data.youTubeLink;
@@ -184,7 +175,8 @@ var mongoose = require('libs/mongoose'),
       cursor.size = probeData.format.size/1048576;
       //newTrack.Pl_UserId = '';//Пока оставим пустым
       cursor.listenCount = '';//Пока оставим пустым
-      cursor.fonogrammType[data.type] = data.quality;
+      cursor.fonogrammType = data.type;
+      cursor.quality = data.quality;
       cursor.vocal = data.vocal;
       cursor.songText = data.songText;
       cursor.youTubeLink = data.youTubeLink;

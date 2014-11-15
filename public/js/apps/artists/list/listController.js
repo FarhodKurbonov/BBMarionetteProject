@@ -93,34 +93,39 @@ define([
                         model: newArtist
                       });
 
-                      self.listenTo(view, 'form:submit', function (data) {
-                        var artistSaved = newArtist.save(data);
-                        if (artistSaved) {
-                          $.when(artistSaved)
-                            .done(function () {
-                              artists.add(newArtist);
-                              view.trigger('dialog:close');
-/*                              var newArtistView = contentMain.children.findByModel(newArtist);
-                              if (newArtistView) {
-                                newArtistView.flash('success')
-                              }*/
-                            })
-                            .fail(function (response) {
-                              var keys = ['name'];
-                              if (response.status === 422) {
-                                console.log('Произошла ошибка: ', response);
-                                //Указываем что поля начинающиеся artist нужно отметить ошибками
-                                view.triggerMethod('form:data:invalid',{errors: response.errors,field:'#artist-'});
-                              }
-                            });
-                        } else {
-                          view.triggerMethod('form:data:invalid', newArtist.validationError)
-                        }
+                      require([
+                           'libs/components/uploader/uploader',
+                           'tpl!apps/artists/common/dialogForm/uploadSuccess.tpl'
+                      ], function (Upload, uploadSuccessTpl) {
+                        Upload.startUploadFile(uploadSuccessTpl);
+                        self.listenTo(view, 'form:submit', function (data) {
+                          var artistSaved = newArtist.save(data);
+                          if (artistSaved) {
+                            $.when(artistSaved)
+                              .done(function () {
+                                artists.add(newArtist);
+                                view.trigger('dialog:close');
+                              })
+                              .
+                              fail(function (response) {
+                                var keys = ['name'];
+                                if (response.status === 422) {
+                                  console.log('Произошла ошибка: ', response);
+                                  //Указываем что поля начинающиеся artist нужно отметить ошибками
+                                  view.triggerMethod('form:data:invalid',{ errors: response.errors,field:'#artist-'});
+                                }
+                              })
+                            ;
+                          } else {
+                            view.triggerMethod('form:data:invalid',
+                              newArtist.validationError)
+                          }
 
+                        });
                       });
+
                       App.dialogRegion.show(view);
-                    }
-                  )
+                    });
                 });
 
                   self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {

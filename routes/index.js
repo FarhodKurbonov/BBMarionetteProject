@@ -1,6 +1,7 @@
 var express = require('express');
 var HomeController = require('../controllers/HomeController');
 var DownloadController = require('../controllers/DownloadController');
+var ImageController = require('../controllers/ImageController');
 
 
 module.exports = function(app) {
@@ -8,6 +9,11 @@ module.exports = function(app) {
   app.get('/download/:id', function(req, res, next) {
       DownloadController.run(req, res, next);
   });
+
+  app.get('/image/:avatar', function(req, res, next) {
+    ImageController.run(req, res, next);
+  });
+
   app.get('/',function(req, res, next) {
     HomeController.run(req, res, next);
   });

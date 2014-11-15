@@ -13,6 +13,7 @@ var config    = require('config'),
   exec        = require('child_process').exec,
   probe       = require('node-ffprobe'),
   translit    = require('translitit-cyrillic-russian-to-latin/lib/translitit-cyrillic-russian-to-latin'),
+  Uploader    = require('libs/uploader').uploader,
   DOWNLOAD    = 'mp3/',
   TEMP        = 'temp/';
 
@@ -34,9 +35,10 @@ module.exports = function(server) {
 
     //==================CRUD Artist==============================
     socket.on('artists:create', function (data, callback) {
-      //Сохранить данные в базу Artists
-      //Если нет есть ошибки сгенерировать ошибку иначе
-      //отправить данные обратно к клиенту(Backbone) via callback
+      /**
+       * Сохранить данные в базу Artists. Если есть ошибки сгенерировать ошибку иначе
+       * отправить данные обратно пользователю
+       */
       Artist.create(data, function(err, result){
         if(err) {
           var error = {};
@@ -198,21 +200,27 @@ module.exports = function(server) {
       var extension = spFlName[spFlName.length - 1];
       fullFileName = fileName +'_' + hash + '_'+ '.' + extension;
       fullFileName = translit(fullFileName);
-      log.info(fullFileName);
+
       var writeStream = fs.createWriteStream(TEMP+fullFileName);
       stream.pipe(writeStream);
       stream.on('error', function() {
-        log.error('error handled')
+        log.error('error occur in saving process - file: %s', fullFileName);
       });
       stream.on('end', function() {
-        log.info('success uploaded!!');
-        log.info('hased digital'+hash);
-        probe(TEMP+fullFileName, function(err, probeData) {
+        log.info('Success uploaded file in temp/%s, date- %d', fullFileName, new Date);
+
+        log.info('Attempt save file to mp3/: %s', fullFileName);
+        var uploader = Uploader.getInstance(fullFileName, socket);
+        //Save file
+        uploader.saveFile();
+
+        /*probe(TEMP+fullFileName, function(err, probeData) {
           //if user change file extension for hack
           if(err)
             return socket.emit('done', {success: false});
           var ext = probeData.fileext;
           var trackName = probeData.filename;
+
           //if user upload file other format(ACC, mp2 )
           if(ext != '.mp3' && ext!=".MP3" && ext != '.mp4' && ext != '.ogg' && ext != '.wav' && ext != '.wma') {
             fs.unlink(TEMP + trackName, function () {
@@ -221,8 +229,7 @@ module.exports = function(server) {
             });
             return;
           }
-
-           if(ext != ".mp3" && ext!=".MP3" ) {
+          if(ext != ".mp3" && ext!=".MP3" ) {
              //We need file name without extension
              var nameWithoutExt = trackName.split('.');
              nameWithoutExt = nameWithoutExt.slice(0, nameWithoutExt.length - 1).join('');
@@ -236,16 +243,16 @@ module.exports = function(server) {
              });
              return;
            }
-        var readable = fs.createReadStream(TEMP+trackName);
-        readable.pipe(fs.createWriteStream(DOWNLOAD+trackName));
-        readable.on('end', function() {
-          fs.unlink(TEMP + trackName, function (err) {
-            if(err) return socket.emit('done', {trackName : trackName, success: false});
-            return socket.emit('done', {trackName : trackName, success: true});
+          var readable = fs.createReadStream(TEMP+trackName);
+          readable.pipe(fs.createWriteStream(DOWNLOAD+trackName));
+          readable.on('end', function() {
+            fs.unlink(TEMP + trackName, function (err) {
+              if(err) return socket.emit('done', {trackName : trackName, success: false});
+              return socket.emit('done', {trackName : trackName, success: true});
+            });
           });
-        });
 
-        });
+        });*/
       });
     });
   });

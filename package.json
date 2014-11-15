@@ -32,6 +32,7 @@
     "socket.io-stream": "*",
     "node-ffprobe":"*",
     "glob": "*",
-    "mime": "*"
+    "mime": "*",
+    "sharp":"*"
   }
 }

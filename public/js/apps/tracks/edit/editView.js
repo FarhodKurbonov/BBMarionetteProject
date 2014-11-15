@@ -1,6 +1,8 @@
 define(['app', 'libs/views/regions/dialogView'], function(App, ViewsCommonDialog) {
   App.module('TracksApp.Edit', function (Edit, App, Backbone, Marionette, $, _) {
     Edit.Track = ViewsCommonDialog.Form.extend({
+      tagName: 'form',
+      className: 'form-horizontal',
       onBeforeRender: function () {
         this.title = 'Редактирование ' + this.model.get('name');
       },

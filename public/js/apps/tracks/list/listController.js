@@ -13,7 +13,7 @@ define([
      */
    var  Controller =  Controllers.extend({
       listTracks: function(options) {
-        //Ожидание заргрузки
+        //Ожидание загрузки
         var loadingView = new ViewsCommon.Loading();
         App.mainRegion.show(loadingView);
         //подгружаем все буквы и список артистов
@@ -21,6 +21,7 @@ define([
           var fetchArtist = App.request('artist:entity', options.id);
           var fetchLetters = App.request('letters:entities');
           var fetchTracks = App.request('tracks:entities', options);
+
           var Layout =  new View.Layout();
           var panel  =  new View.Panel();
           var self   = List.Controller;
@@ -77,7 +78,7 @@ define([
                  * После загрузки файла генерится форма нового трека.
                  */
                 require([
-                        'apps/tracks/common/uploader',
+                        'libs/components/uploader/uploader',
                         'tpl!apps/tracks/new/templates/addNewTrackForm.tpl'
                 ], function(Upload, addNewTrackForm) {
                   Upload.startUploadFile(addNewTrackForm);//Запускаем скрипт для загрузки файла
@@ -96,6 +97,8 @@ define([
                        var desiredModel = tracks.find(function(model){
                          return model.get('letter') === newTrack.get('name').charAt(0).toLowerCase();
                        });
+                       //если такой модели нет то перезагружаем старицу
+                       if(!desiredModel) return  window.location.reload(Backbone.history.fragment);
                        desiredModel.get('list').add(newTrack);// Добавляем новый трек
                        view.trigger('dialog:close');
                     }).fail(function (response) {
@@ -134,7 +137,7 @@ define([
                   model: model
                 });
                 require([
-                         'apps/tracks/common/uploader',
+                         'libs/components/uploader/uploader',
                         'tpl!apps/tracks/edit/template/uploadSuccess.tpl'
                 ], function (Upload, uploadSuccessTpl) {
                   Upload.startUploadFile(uploadSuccessTpl);
@@ -176,9 +179,8 @@ define([
                   });
                 });
 
-
                 App.dialogRegion.show(view)
-              })
+              });
             });
 
 /*            self.listenTo(contentMain, 'childview:track:play', function(childView, options) {
@@ -210,7 +212,7 @@ define([
       },
 
       onDestroy: function() {
-        console.info('Закрытие контроллера ArtistsApp.List.Controller');
+        console.info('Высвобождаем память занятую TracksApp.List.Controller');
       }
     });
     List.Controller = new Controller;

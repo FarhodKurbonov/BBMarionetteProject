@@ -2,7 +2,7 @@
   <i class="yellowgreen js-play glyphicon glyphicon-play-circle" data-id="<%=id%>"></i>
 
 </td>
-<td><a href=""><%= name %></a></td>
+<td><%= name %></td>
 <td>
   <%
   var minduration = Math.floor(duration/60);

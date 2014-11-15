@@ -1,7 +1,7 @@
 <% if( single ) { %>
 
 <a>
-  <img src="http://lorempixel.com/200/200" width="140px" class="img-round">
+  <img src="image/<%=avatar%>" width="140px" class="img-round">
 </a>
 <div class="caption">
   <h5>
@@ -12,7 +12,7 @@
 
 <% } else { %>
 <a href="#tracks/<%=name%>/<%=id%>">
-  <img src="http://lorempixel.com/200/200" width="140px" class="img-round">
+  <img src="image/<%=avatar%>" width="140px" class="img-round">
 </a>
 <div class="caption">
   <h5>

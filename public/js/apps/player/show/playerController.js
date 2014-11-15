@@ -4,6 +4,7 @@ define([
   'scroller',
   'apps/player/show/sm2',
   'apps/player/show/playerView',
+  'affix',
   'jquery-ui'
 
 ], function (App, Controllers, $jScroller, soundManager, View) {
@@ -20,6 +21,11 @@ define([
        $( "#progressbar" ).progressbar({
          value: 0
        });
+       $("#player-region").affix({
+         offset: {
+           top: 100
+         }
+       });
        //Show volumeBar
        $(".js-volume").slider({
          animate: true,
@@ -27,6 +33,7 @@ define([
          max: 100,
          value: 50
        });
+
        //Init $jScroller
        $jScroller.cache.init = true;
        $jScroller.config.refresh = 300;

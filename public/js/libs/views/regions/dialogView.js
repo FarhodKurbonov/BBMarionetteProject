@@ -8,13 +8,10 @@ define([
     Dialog.Form = ItemView.extend({
       events: {
         'click button.js-submit': 'submitClicked'
-      
       },
       initialize: function(options) {
        this.template = options.template
       }
-
-
     });
    
     _.extend(Dialog.Form.prototype, {
