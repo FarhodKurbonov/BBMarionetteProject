@@ -47,9 +47,9 @@ define(['app',
      */
     List.Layout = LayoutView.extend({
       template: layoutTpl,
-      className: 'container',
+      className: 'container tracks-page',
       regions: {
-        leftBarRegion       : "#leftbar-region",
+        catalogRegion       : "#catalog-region",
         contentHeaderRegion : "#content-header-region",
         panelRegion         : "#panel-region",
         tracksRegion       :  "#tracks-region"
@@ -62,6 +62,7 @@ define(['app',
      */
     List.Letter = ItemView.extend({
       tagName: 'li',
+      className: 'label',
       template: letterItemTpl,
 
       events: {

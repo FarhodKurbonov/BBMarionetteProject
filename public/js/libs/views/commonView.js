@@ -110,7 +110,6 @@ define(['app',
 
     Common.ContentHeader = LayoutView.extend({
       template: ContentHeaderLayout,
-      className: 'row',
       regions: {
         pageHeaderRegion: '#page-header',
         thumbnailsRegion: '#thumbnails'

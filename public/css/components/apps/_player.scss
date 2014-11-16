@@ -9,26 +9,16 @@ $mediumaquamarine: #43d789;
 $gray:             #cccccc;
 
 .player-wrap {
-  @include background-image( linear-gradient(to top, $turquoise, lighten($turquoise, 15%), lighten($turquoise, 30%), lighten($turquoise, 45%)) );
-  @include opacity(0.55);
+  $color_start: rgba(255,255,255,1);
+  $color_stop:  rgba(255,255,255, 0.1);
 
-    padding: 0.5rem;
-    margin: 1rem 5px 2rem;
-    @include background-image( linear-gradient(to top, $turquoise, lighten($turquoise, 15%), lighten($turquoise, 30%), lighten($turquoise, 45%)) );
+  @include background(filter-gradient(ie-hex-str($color_start), ie-hex-str($color_stop))); // For IE
+  @include background(linear-gradient($color_start, $color_stop));
 
-    -webkit-box-shadow:  0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 
-    -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-
-  .player-wrap:before, .player-wrap:after {
-    content:"";
-    position:absolute;
-    z-index:-2;
-  }
 }
 
 .row {
@@ -39,11 +29,9 @@ $gray:             #cccccc;
     .scroller-container {
       height: 20px;
 
-      position: relative;
       -webkit-box-shadow: inset -2px -2px 10px lighten($turquoise, 45%);
       -moz-box-shadow: inset -2px -2px 10px lighten($turquoise, 45%);
       box-shadow: inset -2px -2px 10px lighten($turquoise, 45%);
-      overflow: hidden;
 
       #scroller {
         white-space: nowrap;
@@ -58,49 +46,76 @@ $gray:             #cccccc;
   .control-buttons-block {
     margin-top: 0.35em;
 
-    .play-button {
-      margin-top: 0.75rem;
-      margin-bottom: 0.5rem;
+    .js-play, .js-pause, .js-play:hover, .js-pause:hover {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 2.85rem;
+      color: $mediumorchid;
+      cursor: pointer;
+    }
 
-      .js-play, .js-pause {
-        font-size: 4.5rem;
-        color: $mediumorchid;
+
+    .js-volume {
+      vertical-align: middle;
+      display: inline-block;
+      margin-left: 0.4rem;
+      height: 0.9rem;
+      width: 70%;
+    }
+    .glyphicon-volume-up {
+      font-size: 1.85rem;
+      vertical-align: middle;
+    }
+
+
+    .manage-sound {
+      margin-top: 0.8rem;
+      padding-left: 0;
+      #time {
+        vertical-align: middle;
+        padding-bottom: 0.15rem;
       }
-
+      .likeVSdislike {
+        height: 0.9rem;
+        margin-top: 0.5rem;
+        .progress-bar-success{
+          width: 35%;
+        }
+        .progress-bar-danger{
+          width: 65%;
+        }
+      }
+      .up {
+        padding-left: 0;
+        padding-right: 0;
+        @include rotateY( 180deg );
+      }
+      .down{
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+    .progressbar-section {
+      margin-top: 1.5rem;
+      #progressbar {
+        margin-right: 0;
+        height: 0.9rem;
+      }
     }
   }
 }
-
-.progress-bar-block {
-
-  margin-top: 0.35rem;
-  margin-bottom: 1.25rem;
-
-  .js-volume {
-    margin-top: 0.25rem;
-    height: 1.15rem;
-  }
-  #progressbar {
-    margin-right: 0!important;
-    height: 1.5rem!important;
-  }
-  #time {
-    padding-bottom: 0.15rem;
-  }
-}
-
-.js-play:hover {
+.js-play:hover, .js-pause:hover{
   cursor: pointer;
 }
-.js-pause:hover {
-  cursor: pointer;
-}
+
 .affix {
   position: fixed;
-  top:0;
+  top: 0;
+  left: 0;
   width: 100%;
+  z-index: 999999;
 }
 
 .affix-top{
-  visibility:  hidden;
+
 }

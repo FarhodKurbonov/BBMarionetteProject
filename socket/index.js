@@ -13,6 +13,7 @@ var config    = require('config'),
   exec        = require('child_process').exec,
   probe       = require('node-ffprobe'),
   translit    = require('translitit-cyrillic-russian-to-latin/lib/translitit-cyrillic-russian-to-latin'),
+  clearString = require('libs/clearString.js').clearString,
   Uploader    = require('libs/uploader').uploader,
   DOWNLOAD    = 'mp3/',
   TEMP        = 'temp/';
@@ -198,7 +199,15 @@ module.exports = function(server) {
       var spFlName= fullFileName.split('.');
       var fileName = spFlName.slice(0, spFlName.length - 1).join('');
       var extension = spFlName[spFlName.length - 1];
+
+      //=============Some works for correct save file=====================================
+      //Проверка на нулевой байт
+      if(~fileName.indexOf('\0')) return socket.emit('done', {trackName : fileName, success: false});
+      //Очищаем строку от всяких примесей типа html тегов и др
+      fileName = clearString(fileName, 10);
+
       fullFileName = fileName +'_' + hash + '_'+ '.' + extension;
+      //Transliteration. Need for cyrillic words
       fullFileName = translit(fullFileName);
 
       var writeStream = fs.createWriteStream(TEMP+fullFileName);
@@ -207,52 +216,13 @@ module.exports = function(server) {
         log.error('error occur in saving process - file: %s', fullFileName);
       });
       stream.on('end', function() {
+        //Write to log
         log.info('Success uploaded file in temp/%s, date- %d', fullFileName, new Date);
-
         log.info('Attempt save file to mp3/: %s', fullFileName);
+
         var uploader = Uploader.getInstance(fullFileName, socket);
         //Save file
         uploader.saveFile();
-
-        /*probe(TEMP+fullFileName, function(err, probeData) {
-          //if user change file extension for hack
-          if(err)
-            return socket.emit('done', {success: false});
-          var ext = probeData.fileext;
-          var trackName = probeData.filename;
-
-          //if user upload file other format(ACC, mp2 )
-          if(ext != '.mp3' && ext!=".MP3" && ext != '.mp4' && ext != '.ogg' && ext != '.wav' && ext != '.wma') {
-            fs.unlink(TEMP + trackName, function () {
-               if(err) log.error('Ошибка при удалении файла загружженого неизвестного фоармата'+ trackName);
-              return socket.emit('done', {trackName : trackName, success: false});
-            });
-            return;
-          }
-          if(ext != ".mp3" && ext!=".MP3" ) {
-             //We need file name without extension
-             var nameWithoutExt = trackName.split('.');
-             nameWithoutExt = nameWithoutExt.slice(0, nameWithoutExt.length - 1).join('');
-             //Convert file to .mp3
-             exec("ffmpeg -i " + TEMP+trackName  + " " +  DOWNLOAD+nameWithoutExt+".mp3", function(err){
-               if(err) return socket.emit('done', {success: "errorConversation"});
-               fs.unlink(TEMP + trackName, function () {
-                 if(err) return socket.emit('done', {success: "errorConversation"});
-                 return socket.emit('done', {trackName : nameWithoutExt+".mp3", success: true});
-               })
-             });
-             return;
-           }
-          var readable = fs.createReadStream(TEMP+trackName);
-          readable.pipe(fs.createWriteStream(DOWNLOAD+trackName));
-          readable.on('end', function() {
-            fs.unlink(TEMP + trackName, function (err) {
-              if(err) return socket.emit('done', {trackName : trackName, success: false});
-              return socket.emit('done', {trackName : trackName, success: true});
-            });
-          });
-
-        });*/
       });
     });
   });

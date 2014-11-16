@@ -6,6 +6,6 @@
     <i class="glyphicon glyphicon-edit"></i> Редактировать
   </a>
   <button class="btn btn-default btn-sm js-behavior-confirmable">
-    <i class="glyphicon glyphicon-remove"></i> Удалить
+    <i class="glyphicon glyphicon-trash"></i> Удалить
   </button>
 </td>

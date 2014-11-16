@@ -3,6 +3,7 @@ var mime        = require('mime'),
     probe       = require('node-ffprobe'),
     async       = require('async'),
     sharp       = require('sharp'),
+    log         = require('libs/log.js')(module),
     fs          = require('fs'),
    //=========Constants==========
     DOWNLOAD    = 'mp3/',
@@ -131,8 +132,11 @@ ImageSaver.prototype.saveFile = function () {
       });
     }/*,
     function (callback) {
+      log.info('Attempt to delete temp/:file');
         fs.unlink(TEMP + self.file, function (err) {
+
           if(err) return callback(err);
+          log.info('sucess to delete temp/:file');
           return callback(null);
         });
     }*/

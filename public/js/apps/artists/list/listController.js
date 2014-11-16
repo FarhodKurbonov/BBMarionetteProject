@@ -4,7 +4,6 @@ define([
   'libs/controllers/ApplicationController',
   'apps/artists/list/listView',
   'tpl!apps/artists/common/dialogForm/form.tpl',
-  'affix'
 ], function (App, ViewsCommon, Controllers, View, dialogTpl) {
 
   App.module('ArtistsApp.List', function(List, App, Backbone, Marionette, $, _) {
@@ -79,7 +78,7 @@ define([
                  });
 
                   self.listenTo(Layout, 'show', function() {
-                    Layout.leftBarRegion.show(lettersListView);
+                    Layout.catalogRegion.show(lettersListView);
                     Layout.panelRegion.show(panel);
                     Layout.artistsRegion.show(contentMain);
                   });
@@ -130,47 +129,55 @@ define([
 
                   self.listenTo(contentMain, 'childview:artist:edit', function (childView, model) {
                     require( ['apps/artists/edit/editView'], function (Edit) {
+
                       var view = new Edit.Artist({
                         template: dialogTpl,
                         model: model
                       });
 
-                      view.on('form:submit', function (data) {
-                        model.set(data, {silent: true});
-                        var updateModel = model.save(data,{wait: true});
+                      require([
+                        'libs/components/uploader/uploader',
+                        'tpl!apps/artists/common/dialogForm/uploadSuccess.tpl'
+                      ], function (Upload, uploadSuccessTpl) {
+                          Upload.startUploadFile(uploadSuccessTpl);
+                          self.listenTo(view, 'form:submit', function (data) {
+                            model.set(data, {silent: true});
+                            var updateModel = model.save(data,{wait: true});
 
-                        if (updateModel) {
-                          view.onBeforeDestroy = function () {
-                            model.set({changedOnServer: false});
-                          };
-                          $.when(updateModel)
-                            .done(function () {
-                              childView.render();
-                              delete view.onDestroy;
-                              view.trigger("dialog:close");
-                              childView.flash('success');
-                            })
-                            .fail(function (response) {
+                            if (updateModel) {
+                              view.onBeforeDestroy = function () {
+                                model.set({changedOnServer: false});
+                              };
+                              $.when(updateModel)
+                                .done(function () {
+                                  childView.render();
+                                  delete view.onDestroy;
+                                  view.trigger("dialog:close");
+                                  childView.flash('success');
+                                })
+                                .fail(function (response) {
+                                  view.onDestroy = function () {
+                                    model.set(model.previousAttributes());
+                                  };
+                                  if (response.status === 422) {
+                                    var keys = ['name', 'avatar'];
+                                    model.refresh(response.entity, keys);
+                                    view.render();
+                                    //Указываем что поля начинающиеся artist нужно отметить ошибками
+                                    view.triggerMethod('form:data:invalid',{errors: response.errors,field:'#artist-'});
+                                    model.set(response.entity, {silent: true});
+
+                                  }
+                                });
+                            } else {
                               view.onDestroy = function () {
                                 model.set(model.previousAttributes());
                               };
-                              if (response.status === 422) {
-                                var keys = ['name', 'avatar'];
-                                model.refresh(response.entity, keys);
-                                view.render();
-                                //Указываем что поля начинающиеся artist нужно отметить ошибками
-                               view.triggerMethod('form:data:invalid',{errors: response.errors,field:'#artist-'});
-                               model.set(response.entity, {silent: true});
-
-                              }
-                            });
-                        } else {
-                          view.onDestroy = function () {
-                            model.set(model.previousAttributes());
-                          };
-                          view.triggerMethod('form:data:invalid', model.validationError);
-                        }
+                              view.triggerMethod('form:data:invalid', model.validationError);
+                            }
+                          })
                       });
+
 
                       App.dialogRegion.show(view)
                     })

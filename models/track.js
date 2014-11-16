@@ -7,6 +7,7 @@ var mongoose = require('libs/mongoose'),
     http     = require('http'),
     probe    = require('node-ffprobe'),
     glob     = require('glob'),
+    clearString = require('libs/clearString.js').clearString,
     ObjectID = require('mongodb').ObjectID,
     DOWNLOAD = 'mp3/';
 
@@ -130,12 +131,16 @@ var mongoose = require('libs/mongoose'),
 
   //save data when creates new track entity
   schema.statics.saveData =  function(data, cb){
+    var Track = this;
     probe(DOWNLOAD+data.trackName, function(err, probeData) {
       if(err)
         return cb( new TrackError('Произошла ошибка при сохранении трека Попоробуйте пересохранить') );
 
+      //Проверка на нулевой байт
+      if(~data.name.indexOf('\0')) return cb( new TrackError('Если хочешь хакерничать иди на другой ресурс!!') );
+
       var newTrack = new Track();
-      newTrack.name = data.name || "";//Взяли имя
+      newTrack.name = clearString(data.name, 20) || "";//Взяли имя
       newTrack.artistId = data.artistId;
       newTrack.url.urlM = probeData.file;
       newTrack.bitRate = probeData.format.bit_rate;
@@ -148,8 +153,8 @@ var mongoose = require('libs/mongoose'),
       newTrack.fonogrammType = data.type;
       newTrack.quality = data.quality;
       newTrack.vocal = data.vocal;
-      newTrack.songText = data.songText;
-      newTrack.youTubeLink = data.youTubeLink;
+      newTrack.songText = clearString(data.songText, 1000) ;
+      newTrack.youTubeLink = clearString(data.youTubeLink, 256);
       newTrack.save(function(err, result) {
         if(err) return cb(err);
         var track =  result.toObject();
@@ -158,12 +163,11 @@ var mongoose = require('libs/mongoose'),
     });
   };
   //update exist track entity
-  schema.statics.updateData =  function(data, oldEntity, cursor, cb){
+  schema.statics.updateData =  function(data, oldEntity, cursor, cb) {
 
     probe(DOWNLOAD+data.trackName, function(err, probeData) {
       if(err)
         return cb(new TrackError('Произошла ошибка при сохранении трека Попоробуйте пересохранить'), oldEntity);
-
 
       cursor.name = data.name || "";//Взяли имя
       cursor.artistId = data.artistId;
@@ -227,7 +231,6 @@ var mongoose = require('libs/mongoose'),
               }
             //Иначе передаем управление дальше
               return callback(null, oldEntity, cursor);
-
           });
       },
       //Если запрос на просто изменен имени файла
@@ -238,7 +241,6 @@ var mongoose = require('libs/mongoose'),
         }
         //Если нет то передаем управление дальше
         return callback(new Error('Complete Task'), oldEntity, cursor);
-
       }
     ], function (err, oldEntity, cursor) {
         if(err.name == 'TrackError')

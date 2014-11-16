@@ -68,7 +68,7 @@ function createLetter(callback) {
 function createArtist(callback) {
 
     var artists = [];
-    for(var i = 0; i < 300; i++ ) {
+    for(var i = 0; i < 2; i++ ) {
       var artist = {};
       artist.name = faker.Name.findName();
       artist.createdAt = new Date();
@@ -112,7 +112,7 @@ function createTrack(callback) {
 
       async.each(artistsID, function(artistID, callback) {
         var tracks = [];
-        for(var i = 0 ; i < 30; i++ ) {
+        for(var i = 0 ; i < 2; i++ ) {
           var trackData = {};
           trackData.name = faker.Name.findName();
           trackData.artistId = new ObjectID(artistID);

@@ -11,7 +11,7 @@ define(['app',
     template: MainLayoutTpl,
 
     regions: {
-      leftbarRegion: "#leftbar-region",
+      catalogRegion: "#catalog-region",
       contentRegion: "#content-region"
     },
 
@@ -25,7 +25,7 @@ define(['app',
       });
 
       this.on('show', function() {
-        this.leftbarRegion.show(new leftbar.render());
+        this.catalogRegion.show(new leftbar.render());
         this.contentRegion.show(new content.render());
       })
     }

@@ -52,14 +52,12 @@ body content#main-region div.container {
 a:hover {
   text-decoration: none;
 }
-
 .breadcrumb {
   background: transparent;
   text-transform: uppercase;
   font-size: 15px;
   padding: 0 15px;
 }
-
 /*.img-artist, .img-album {
   border-radius: 4px;
   float: left;
@@ -71,18 +69,8 @@ a:hover {
   border-radius: 2px;
   margin: 0 20px;
 }*/
-
 .img-round {
   border-radius: 2px;
-}
-
-.list-letter {
-  font-family: $base-font-family;
-  font-size: $base-font-size;
-  text-transform: uppercase;
-  text-align:center;
-  float: left;
-  margin: 0px 2px 0 2px;
 }
 
 .page-header {
@@ -127,8 +115,6 @@ h3 small {
   font-size: $base-font-size;
   padding-top: 2px;
 }
-
-
 
 #search-result {
   display: none;
@@ -178,13 +164,11 @@ h3 small {
 #search-result .list-group-item {
   padding: 5px 15px;
 }
-
 /*.block-artist-images {
   width:300px;
   float: right;
   margin-right: 10px;
 }*/
-
 .letters {
   float:left; width: 70px; padding: 0 10px;
   color: #666;
@@ -193,7 +177,26 @@ h3 small {
   text-transform: uppercase;
   font-size: 30px
 }
-
+.artists-page #catalog-region ul, .tracks-page #catalog-region ul {
+  margin: 0 auto;
+  width: 80%;
+  text-align: center;
+  font-weight: lighter;
+  font-size: 1.3em;
+  text-transform: lowercase;
+}
+.artists-page #catalog-region  li, .tracks-page #catalog-region  li {
+  margin: 2px;
+  background-color: $mediumseagreen;
+  border: 1.45px solid $mediumaquamarine;
+}
+.artists-page #catalog-region  ul li a, .tracks-page #catalog-region  ul li a  {
+  color: $white;
+}
+.artists-page #catalog-region  li:hover, .tracks-page #catalog-region  li:hover {
+  background-color: darken($mediumaquamarine, 13.5%);
+  border: 1.45px solid $mediumseagreen;
+}
 /*.social-buttons {
   float: right;
   margin: 0 40px 0 0;
@@ -217,8 +220,11 @@ table {
   font-size: 1.5em;
   color: $yellowgreen;
 }
-
 .copyright{
   font-family: $base-font-family;
   font-size: 1.8rem;
+}
+.glyphicon-signal {
+  font-size: 0.5em;
+  color: $yellowgreen;
 }

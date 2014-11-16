@@ -50,9 +50,9 @@ define(['app',
      */
     List.Layout = LayoutView.extend({
       template: layoutTpl,
-      className: 'container',
+      className: 'container artists-page',
       regions: {
-        leftBarRegion       : "#leftbar-region",
+        catalogRegion       : "#catalog-region",
         contentHeaderRegion : "#content-header-region",
         panelRegion         : "#panel-region",
         artistsRegion       : "#artists-region"
@@ -65,6 +65,7 @@ define(['app',
      */
     List.Letter = ItemView.extend({
       tagName: 'li',
+      className: 'label',
       template: letterItemTpl,
 
       events: {
@@ -89,6 +90,7 @@ define(['app',
      */
     List.Letters = CompositeView.extend({
       template: lettersTpl,
+      className: 'row',
       childView: List.Letter,
       childViewContainer: 'ul'
     });

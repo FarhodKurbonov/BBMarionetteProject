@@ -1,4 +1,4 @@
-<% if( single ) { %>
+<% if( single && avatar ) { %>
 
 <a>
   <img src="image/<%=avatar%>" width="140px" class="img-round">
@@ -10,7 +10,7 @@
 </div>
 
 
-<% } else { %>
+<% } else if(avatar) { %>
 <a href="#tracks/<%=name%>/<%=id%>">
   <img src="image/<%=avatar%>" width="140px" class="img-round">
 </a>

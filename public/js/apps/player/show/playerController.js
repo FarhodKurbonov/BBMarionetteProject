@@ -21,9 +21,9 @@ define([
        $( "#progressbar" ).progressbar({
          value: 0
        });
-       $("#player-region").affix({
+       $(".player-wrap").affix({
          offset: {
-           top: 100
+           top: 50
          }
        });
        //Show volumeBar
@@ -75,7 +75,6 @@ define([
          prevTrackID = id;
          $(this).data('prevTrack', id);
          play(id);
-
 
        } );
        /**
@@ -132,14 +131,6 @@ define([
             var sec = Math.floor(time%60);
             var secDisplay = (sec<10) ? "0"+sec : sec;
             var amountPlayed = minDisplay+":"+secDisplay;
-
-            //Calculate general duration time
-/*            var timeduration = duration/1000;
-            var minduration = Math.floor(timeduration/60);
-            var minDisplay = (minduration<10) ? "0"+minduration : minduration;
-            var secduration = Math.floor(timeduration%60);
-            var secDisplay = (secduration<10) ? "0"+secduration : secduration;
-            var totalDuration = minDisplay+":"+secDisplay;*/
 
             //Display calculated time
             $("#time").text(amountPlayed);

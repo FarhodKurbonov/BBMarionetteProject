@@ -1,1 +1,1 @@
-<ul class="list-unstyled list-letter"> </ul>
+<ul class="list-inline"> </ul>

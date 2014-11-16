@@ -39,6 +39,10 @@ body {
   background: $body-bg;
 }
 
+#main-region .container  {
+  min-height: 90rem;;
+}
+
 .landing-page {
   margin-top: 10.25rem;
 
@@ -85,4 +89,7 @@ body {
 .landing-page li:hover {
   background-color: darken($mediumaquamarine, 13.5%);
   border: 1.45px solid $mediumseagreen;
+}
+#panel-region{
+  margin-bottom: 1.25rem;
 }

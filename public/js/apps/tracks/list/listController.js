@@ -3,7 +3,6 @@ define([
   'libs/views/commonView',
   'libs/controllers/ApplicationController',
   'apps/tracks/list/listView',
-  'affix'
 ], function (App, ViewsCommon, Controllers, View) {
 
   App.module('TracksApp.List', function(List, App, Backbone, Marionette, $, _) {
@@ -57,7 +56,7 @@ define([
             });
 
             self.listenTo(Layout, 'show', function() {
-              Layout.leftBarRegion.show(lettersListView);
+              Layout.catalogRegion.show(lettersListView);
               Layout.contentHeaderRegion.show(contentHeader);
               Layout.panelRegion.show(panel);
               Layout.tracksRegion.show(contentMain);
