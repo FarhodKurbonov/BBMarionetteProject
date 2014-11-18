@@ -1,8 +1,8 @@
 define(['app',
-        'marionette',
-        'ss',
-        'tpl!libs/components/uploader/spinner.tpl',
-        'spin.jquery'
+  'marionette',
+  'ss',
+  'tpl!libs/components/uploader/spinner.tpl',
+  'spin.jquery'
 ], function(App, Marionette, ss, spinTpl){
   App.module('TracksApp.Upload', function(Upload, App, Backbone, Marionette, $, _) {
     /**
@@ -11,25 +11,22 @@ define(['app',
      * выводим сообщение об этом пользователю
      */
     Upload.startUploadFile = function(template) {
-
+      var SelectedFile,
+        nameBox    = $('#NameBox'),
+        fileBox    = $('#FileBox'),
+        uploadArea = $("#UploadArea"),
+        uploadButton =  $('#UploadButton'),
+        downloaded = 0,
+        blobStream,
+        progressBar,
+        percent,
+        MB;
       if (window.File && window.FileReader) {
-        var SelectedFile,
-          nameBox    = $('#NameBox'),
-          fileBox    = $('#FileBox'),
-          uploadArea = $('#UploadArea'),
-          uploadButton =  $('#UploadButton'),
-          downloaded = 0,
-          blobStream,
-          progressBar,
-          percent,
-          MB;
-
         if(uploadButton.data('uploadButton')=='listen' && fileBox.data('fileBox')=='listen'){
           return ;
         } else{
           uploadButton.on('click', StartUpload)
             .data('uploadButton', 'listen');
-
           fileBox.on('change', fileChosen)
             .data('fileBox', 'listen');
         }
@@ -134,7 +131,7 @@ define(['app',
         top: '40%',
         left: '50%'
       };
-       $('#spinner').spin(opts);
+      $('#spinner').spin(opts);
     }
 
   });
