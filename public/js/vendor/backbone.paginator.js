@@ -596,7 +596,7 @@ Backbone.Paginator = (function ( Backbone, _, $ ) {
       if( filter === '' || !_.isString(filter) ) {
         return models;
       } else {
-        var words = _.map(filter.match(/\w+/ig), function(element) { return element.toLowerCase(); });
+        var words = _.map(filter.match(/[\wа-яё]/ig), function(element) { return element.toLowerCase(); });
         var pattern = "(" + _.uniq(words).join("|") + ")";
         var regexp = new RegExp(pattern, "igm");
       }

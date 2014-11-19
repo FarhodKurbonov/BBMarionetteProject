@@ -9,7 +9,7 @@
           <span class="icon-bar"></span>
         </button>
           <a class="navbar-brand" href="/">
-            <i class="glyphicon glyphicon-home"></i>
+            PlayMinus
           </a>
       </div>
 
